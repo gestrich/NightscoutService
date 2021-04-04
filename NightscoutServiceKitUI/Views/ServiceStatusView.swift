@@ -37,6 +37,14 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                         Spacer()
                         Text(String(describing: viewModel.status))
                     }
+                    HStack {
+                        Text("OTP")
+                        Spacer()
+                        Text(String("12345"))
+                        NavigationLink(destination: Text("Somewhere")) {
+                            EmptyView()
+                        }
+                    }
                 }
             }
             
