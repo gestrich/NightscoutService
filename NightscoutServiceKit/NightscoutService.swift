@@ -219,6 +219,11 @@ extension NightscoutService: RemoteDataService {
 
         uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
     }
+    
+    public func validateNotificationSource(_ notification: [String: AnyObject]) -> Bool {
+        //TODO: Check OTP code
+        return true
+    }
 
 }
 
