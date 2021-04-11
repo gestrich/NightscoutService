@@ -25,6 +25,8 @@ public final class NightscoutService: Service {
 
     public var apiSecret: String?
     
+    let otpManager: OTPManager
+    
     /// Maps loop syncIdentifiers to Nightscout objectIds
     var objectIdCache: ObjectIdCache {
         get {
@@ -47,6 +49,7 @@ public final class NightscoutService: Service {
 
     public init() {
         lockedObjectIdCache = Locked(ObjectIdCache())
+        self.otpManager = OTPManager()
     }
 
     public required init?(rawState: RawStateValue) {
@@ -57,6 +60,8 @@ public final class NightscoutService: Service {
         } else {
             self.lockedObjectIdCache = Locked(ObjectIdCache())
         }
+        
+        self.otpManager = OTPManager()
         
         restoreCredentials()
     }
@@ -221,10 +226,34 @@ extension NightscoutService: RemoteDataService {
     }
     
     public func validateNotificationSource(_ notification: [String: AnyObject]) -> Bool {
-        //TODO: Check OTP code
-        return true
+        
+        //TODO: Need to allow overrides without OTP validation.
+        
+        var retVal: Bool = false
+        
+        let otp = otpManager.otp()
+        
+        if let otpIn = notification["otp"] as? String {
+            print("OTP:   \(otp)")
+            print("OTPIn: \(otpIn)")
+            if (otpIn.count == 6 && otp.count == 6) {
+                if( otpIn == otp ) {
+                    retVal = true
+                }
+            }
+        } else {
+            retVal = false
+        }
+        
+        if(retVal) {
+            print("OTP Check Passed")
+        } else {
+            print("OTP Check Failed")
+        }
+        
+        return retVal
     }
-
+    
 }
 
 extension KeychainManager {

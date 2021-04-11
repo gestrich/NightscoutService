@@ -37,12 +37,12 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                         Spacer()
                         Text(String(describing: viewModel.status))
                     }
-                    HStack {
-                        Text("OTP")
-                        Spacer()
-                        Text(String("12345"))
-                        NavigationLink(destination: Text("Somewhere")) {
-                            EmptyView()
+                    
+                    NavigationLink(destination: OTPView().navigationBarItems(trailing: dismissButton)) {
+                        HStack {
+                            Text("One-Time Password")
+                            Spacer()
+                            Text(String("12345"))
                         }
                     }
                 }
@@ -62,6 +62,16 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
     private var dismissButton: some View {
         Button(action: dismiss) {
             Text("Done").bold()
+        }
+    }
+    
+    struct OTPView: UIViewControllerRepresentable {
+        func makeUIViewController(context: UIViewControllerRepresentableContext<OTPView>) -> OTPSelectionViewController {
+            OTPSelectionViewController(otpManager: OTPManager())
+        }
+
+        func updateUIViewController(_ uiViewController: OTPSelectionViewController, context: UIViewControllerRepresentableContext<OTPView>) {
+            print("here")
         }
     }
 

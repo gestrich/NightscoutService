@@ -62,7 +62,7 @@ public class OTPManager {
         return self.otpToken.currentPassword!
     }
 
-    init() {
+    public init() {
         // OTP
         let keychain = KeychainManager()
         if let secretKeyVal = keychain.getOTPSecretKey(), let createdVal = keychain.getOTPSecretKeyCreated() {
