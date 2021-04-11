@@ -42,7 +42,7 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                         HStack {
                             Text("One-Time Password")
                             Spacer()
-                            Text(String("12345"))
+                            Text(OTPManager().otp())
                         }
                     }
                 }

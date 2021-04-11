@@ -49,6 +49,7 @@
 		A9C62DA52331CAE200535612 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C62DA32331CAD400535612 /* OSLog.swift */; };
 		A9E2DA072623211400AB8C89 /* Base32.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */; platformFilter = ios; };
 		A9E2DA792623251100AB8C89 /* OneTimePassword.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */; platformFilter = ios; };
+		A9E2DA98262351F900AB8C89 /* OTPSelectionViewControllerSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E2DA97262351F900AB8C89 /* OTPSelectionViewControllerSwiftUI.swift */; };
 		A9E4153622BC89A300168E14 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153522BC89A300168E14 /* NibLoadable.swift */; };
 		A9E4153822BC89B600168E14 /* IdentifiableClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153722BC89B600168E14 /* IdentifiableClass.swift */; };
 		A9E4153B22BC8A3800168E14 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153A22BC8A3800168E14 /* UIColor.swift */; };
@@ -163,6 +164,7 @@
 		A9C62DA32331CAD400535612 /* OSLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLog.swift; sourceTree = "<group>"; };
 		A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Base32.xcframework; path = ../OneTimePassword/Carthage/Build/Base32.xcframework; sourceTree = "<group>"; };
 		A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OneTimePassword.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9E2DA97262351F900AB8C89 /* OTPSelectionViewControllerSwiftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPSelectionViewControllerSwiftUI.swift; sourceTree = "<group>"; };
 		A9E4153522BC89A300168E14 /* NibLoadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
 		A9E4153722BC89B600168E14 /* IdentifiableClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableClass.swift; sourceTree = "<group>"; };
 		A9E4153A22BC8A3800168E14 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 				C1E7036B25070D3200DAB534 /* ServiceUICoordinator.swift */,
 				A9246B2B26231B7400CCDCB3 /* OTPNavigationController.swift */,
 				A9246B3226231B8D00CCDCB3 /* OTPSelectionViewController.swift */,
+				A9E2DA97262351F900AB8C89 /* OTPSelectionViewControllerSwiftUI.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -756,6 +759,7 @@
 				A9C62DA52331CAE200535612 /* OSLog.swift in Sources */,
 				A9E4153B22BC8A3800168E14 /* UIColor.swift in Sources */,
 				A9246B2C26231B7400CCDCB3 /* OTPNavigationController.swift in Sources */,
+				A9E2DA98262351F900AB8C89 /* OTPSelectionViewControllerSwiftUI.swift in Sources */,
 				C1E7038C2507117900DAB534 /* CredentialsView.swift in Sources */,
 				C18608B0252AAFA4008215DB /* WelcomeView.swift in Sources */,
 			);
