@@ -15,9 +15,12 @@ let AlertDismissTime = 10
 class OTPSelectionViewController: UIViewController {
 
     var otpManager: OTPManager?
-    private var currentOTPLabelView: UILabel?
-    private var createdLabelView: UILabel?
-    private var qrCodeView: UIImageView?
+    
+    //Subviews
+    private var currentOTPLabelView: UILabel!
+    private var createdLabelView: UILabel!
+    private var qrCodeView: UIImageView!
+    
     private var timer: Timer?
     private var dismissTimer: Timer?
     private var start: Double!
@@ -42,82 +45,92 @@ class OTPSelectionViewController: UIViewController {
         }
         return nil
     }
-    private func showQRCode() {
-       if let image = generateQRCode(from: otpManager!.otpURL) {
-           //let headerView = tableView.tableHeaderView!
-           let theView = self.view!
+    private func updateQRCode() {
+        
+        guard let otpManager = otpManager else {
+            return
+        }
 
-           // current otp
-           let otp = otpManager!.otp()
-           currentOTPLabelView!.text = "\(otp)"
+        //QR View
+        qrCodeView.image = generateQRCode(from: otpManager.otpURL)
+        
+        //Code Label View
+        currentOTPLabelView!.text = "\(otpManager.otp())"
+        
+        //OTP Created Date View
+        createdLabelView.text = "\(otpManager.created)"
+        
+        //let headerView = tableView.tableHeaderView!
 
-           // current created tag
-           let created = otpManager!.created
-           createdLabelView!.text = "\(created)"
-
-           // change current QR Code
-           qrCodeView!.removeFromSuperview()
-           let newQRCodeView = UIImageView(image: image)
-           //newQRCodeView.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleBottomMargin]
-           theView.addSubview(newQRCodeView)
-
-           // arrange
-           let  yLoc = theView.frame.size.height / 2
-           newQRCodeView.center = CGPoint(x: theView.frame.size.width/2, y: yLoc)
-           currentOTPLabelView!.frame.size.width = theView.frame.size.width
-           createdLabelView!.frame.size.width = theView.frame.size.width
-           var labelyLoc = yLoc - newQRCodeView.frame.size.height / 2 - 50
-           currentOTPLabelView!.center = CGPoint(x: theView.frame.size.width/2, y: labelyLoc)
-           labelyLoc = yLoc + newQRCodeView.frame.size.height / 2 + 50
-           createdLabelView!.center = CGPoint(x: theView.frame.size.width/2, y: labelyLoc)
-
-           // keep new QR code
-           qrCodeView = newQRCodeView
-
-         }
     }
     override func viewDidLoad() {
-        self.navigationItem.rightBarButtonItem =
-        UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshQR(_:)))
-
-        self.navigationItem.leftBarButtonItem =
-        UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissView(_:)))
+        
+        self.navigationItem.backButtonTitle = "Nightscout"
+//        self.navigationItem.rightBarButtonItem =
+//        UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshQR(_:)))
 
         self.title = "Secret Key"
+        
+        //Subviews
+        addQRCodeLabel()
+        addCurrentOPTLabelView()
+        addCreatedLabelView()
+        
+        layoutViews()
+        
+        updateQRCode()
 
-        // create the views
-        let theView = UIView()
+        //theView.backgroundColor = .secondarySystemBackground
+        
+        super.viewDidLoad()
 
-        qrCodeView = UIImageView()
-        qrCodeView!.contentMode = .scaleAspectFit
-
+    }
+    
+    private func addCurrentOPTLabelView() {
         currentOTPLabelView = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 50))
         currentOTPLabelView!.text = "xxxxxx"
         currentOTPLabelView!.font = UIFont.boldSystemFont(ofSize: 24)
         currentOTPLabelView!.textAlignment = .center
-
+        view.addSubview(currentOTPLabelView!)
+    }
+    
+    private func addQRCodeLabel() {
+        qrCodeView = UIImageView()
+        qrCodeView!.contentMode = .scaleAspectFit
+        view.addSubview(qrCodeView!)
+    }
+    
+    private func addCreatedLabelView(){
         createdLabelView = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 50))
         createdLabelView!.text = "xxxxxx"
         createdLabelView!.font = UIFont.boldSystemFont(ofSize: 24)
         createdLabelView!.textAlignment = .center
-
-        theView.addSubview(currentOTPLabelView!)
-        theView.addSubview(createdLabelView!)
-        theView.addSubview(qrCodeView!)
-        //theView.backgroundColor = .secondarySystemBackground
-        theView.frame.size.width = UIScreen.main.bounds.width
-        theView.frame.size.height = UIScreen.main.bounds.height
-        self.view = theView
-
-        showQRCode()
-
-        super.viewDidLoad()
+        view.addSubview(createdLabelView!)
     }
+    
+    private func layoutViews(){
+        
+        let labelVerticalSpace: CGFloat = 15.0
+        currentOTPLabelView.translatesAutoresizingMaskIntoConstraints = false
+        currentOTPLabelView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        currentOTPLabelView.bottomAnchor.constraint(equalTo: qrCodeView.topAnchor, constant: -labelVerticalSpace).isActive = true
+        
+        let qrCodeViewSideSpace: CGFloat = 15.0
+        qrCodeView.translatesAutoresizingMaskIntoConstraints = false
+        qrCodeView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: qrCodeViewSideSpace).isActive = true
+        qrCodeView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        qrCodeView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -qrCodeViewSideSpace).isActive = true
+        
+        createdLabelView.translatesAutoresizingMaskIntoConstraints = false
+        createdLabelView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        createdLabelView.topAnchor.constraint(equalTo: qrCodeView.bottomAnchor, constant: labelVerticalSpace).isActive = true
+    }
+    
     @objc private func refreshQR(_ sender: UIBarButtonItem) {
         let refreshAlert = UIAlertController(title: "Refresh Secret Key", message: "This action will invalidate the current key. Are you sure you want to refresh? ", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default ) {_ in
             self.otpManager!.refreshOTPToken()
-            self.showQRCode()
+            self.updateQRCode()
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .default ) {_ in
         }
