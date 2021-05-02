@@ -185,7 +185,7 @@ class ServiceUICoordinator: UINavigationController, CompletionNotifying, UINavig
                 self.service?.clearCredentials()
                 self.stepFinished()
             }
-            let view = ServiceStatusView(viewModel: viewModel)
+            let view = ServiceStatusView(viewModel: viewModel, otpViewModel: OTPViewModel(otpManager: OTPManager()))
             let hostedView = hostingController(rootView: view)
             return hostedView
         case .correctionRangeInfo:

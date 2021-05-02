@@ -37,7 +37,7 @@ public class OTPManager {
     public var otpURL: String
     public var created: String
 
-    public func refreshOTPToken() {
+    public func resetSecretKey() {
        // TODO: refresh tokens
        // generate secret key
        self.secretKey = String((0..<32).map{_ in Base32Dictionary.randomElement()!})

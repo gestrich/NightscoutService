@@ -26,8 +26,6 @@
 		A91BAC5D22BC6E1500ABF1BB /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC5622BC6D9A00ABF1BB /* LoopKit.framework */; };
 		A91BAC5E22BC6E1500ABF1BB /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC5922BC6DA800ABF1BB /* LoopKitUI.framework */; };
 		A9246B2526231B3A00CCDCB3 /* OTPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9246B2426231B3A00CCDCB3 /* OTPManager.swift */; };
-		A9246B2C26231B7400CCDCB3 /* OTPNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9246B2B26231B7400CCDCB3 /* OTPNavigationController.swift */; };
-		A9246B3326231B8D00CCDCB3 /* OTPSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9246B3226231B8D00CCDCB3 /* OTPSelectionViewController.swift */; };
 		A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6152358F42A00949C8B /* StoredDosingDecision.swift */; };
 		A934B6182358F49300949C8B /* StoredSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6172358F49300949C8B /* StoredSettings.swift */; };
 		A934B61A2358F5FC00949C8B /* TemporaryScheduleOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6192358F5FC00949C8B /* TemporaryScheduleOverride.swift */; };
@@ -53,6 +51,7 @@
 		A9E4153622BC89A300168E14 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153522BC89A300168E14 /* NibLoadable.swift */; };
 		A9E4153822BC89B600168E14 /* IdentifiableClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153722BC89B600168E14 /* IdentifiableClass.swift */; };
 		A9E4153B22BC8A3800168E14 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153A22BC8A3800168E14 /* UIColor.swift */; };
+		A9F9ADED263F0F71005C6C48 /* OTPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9ADEC263F0F71005C6C48 /* OTPViewModel.swift */; };
 		C102014D2526C1BA003B6FB7 /* ServiceStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C102014C2526C1BA003B6FB7 /* ServiceStatusViewModel.swift */; };
 		C10201552526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10201542526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift */; };
 		C18608B0252AAFA4008215DB /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18608AF252AAFA4008215DB /* WelcomeView.swift */; };
@@ -127,8 +126,6 @@
 		A91BAC5622BC6D9A00ABF1BB /* LoopKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91BAC5922BC6DA800ABF1BB /* LoopKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9246B2426231B3A00CCDCB3 /* OTPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPManager.swift; sourceTree = "<group>"; };
-		A9246B2B26231B7400CCDCB3 /* OTPNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPNavigationController.swift; sourceTree = "<group>"; };
-		A9246B3226231B8D00CCDCB3 /* OTPSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPSelectionViewController.swift; sourceTree = "<group>"; };
 		A934B6152358F42A00949C8B /* StoredDosingDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredDosingDecision.swift; sourceTree = "<group>"; };
 		A934B6172358F49300949C8B /* StoredSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredSettings.swift; sourceTree = "<group>"; };
 		A934B6192358F5FC00949C8B /* TemporaryScheduleOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryScheduleOverride.swift; sourceTree = "<group>"; };
@@ -168,6 +165,7 @@
 		A9E4153522BC89A300168E14 /* NibLoadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
 		A9E4153722BC89B600168E14 /* IdentifiableClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableClass.swift; sourceTree = "<group>"; };
 		A9E4153A22BC8A3800168E14 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		A9F9ADEC263F0F71005C6C48 /* OTPViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPViewModel.swift; sourceTree = "<group>"; };
 		C102014C2526C1BA003B6FB7 /* ServiceStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStatusViewModel.swift; sourceTree = "<group>"; };
 		C10201542526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NightscoutService+ServiceStatusViewModelDelegate.swift"; sourceTree = "<group>"; };
 		C18608AF252AAFA4008215DB /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
@@ -394,8 +392,6 @@
 			isa = PBXGroup;
 			children = (
 				C1E7036B25070D3200DAB534 /* ServiceUICoordinator.swift */,
-				A9246B2B26231B7400CCDCB3 /* OTPNavigationController.swift */,
-				A9246B3226231B8D00CCDCB3 /* OTPSelectionViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -407,6 +403,7 @@
 				C1E7038925070DFA00DAB534 /* SettingsReviewViewModel.swift */,
 				C1E7038D2507131400DAB534 /* CredentialsViewModel.swift */,
 				C102014C2526C1BA003B6FB7 /* ServiceStatusViewModel.swift */,
+				A9F9ADEC263F0F71005C6C48 /* OTPViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -750,15 +747,14 @@
 				C1E7036C25070D3200DAB534 /* ServiceUICoordinator.swift in Sources */,
 				C1E7038A25070DFA00DAB534 /* SettingsReviewViewModel.swift in Sources */,
 				A9B007B422BD6FF7000131DE /* LocalizedString.swift in Sources */,
-				A9246B3326231B8D00CCDCB3 /* OTPSelectionViewController.swift in Sources */,
 				C10201552526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift in Sources */,
 				C1E703932507193400DAB534 /* Image.swift in Sources */,
 				A993990522BC70B7005E39D3 /* NightscoutService+UI.swift in Sources */,
+				A9F9ADED263F0F71005C6C48 /* OTPViewModel.swift in Sources */,
 				C1E7038E2507131400DAB534 /* CredentialsViewModel.swift in Sources */,
 				C1E70395250725AA00DAB534 /* KeyboardObserver.swift in Sources */,
 				A9C62DA52331CAE200535612 /* OSLog.swift in Sources */,
 				A9E4153B22BC8A3800168E14 /* UIColor.swift in Sources */,
-				A9246B2C26231B7400CCDCB3 /* OTPNavigationController.swift in Sources */,
 				A9E2DA98262351F900AB8C89 /* OTPSelectionView.swift in Sources */,
 				C1E7038C2507117900DAB534 /* CredentialsView.swift in Sources */,
 				C18608B0252AAFA4008215DB /* WelcomeView.swift in Sources */,

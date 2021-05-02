@@ -13,7 +13,8 @@ import NightscoutServiceKit
 struct ServiceStatusView: View, HorizontalSizeClassOverride {
     @Environment(\.dismiss) private var dismiss
 
-    @ObservedObject var viewModel: ServiceStatusViewModel //Can OTP be part of this and update view dynamically when changes?
+    @ObservedObject var viewModel: ServiceStatusViewModel
+    @ObservedObject var otpViewModel: OTPViewModel
     
     var body: some View {
         VStack {
@@ -37,11 +38,11 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                         Spacer()
                         Text(String(describing: viewModel.status))
                     }
-                    NavigationLink(destination: OTPSelectionView()) {
+                    NavigationLink(destination: OTPSelectionView(otpViewModel: otpViewModel)) {
                         HStack {
                             Text("One-Time Password")
                             Spacer()
-                            Text(OTPManager().otp())
+                            Text(otpViewModel.otpCode)
                         }
                     }
                 }
@@ -61,22 +62,6 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
     private var dismissButton: some View {
         Button(action: dismiss) {
             Text("Done").bold()
-        }
-    }
-    
-    private var refreshButton: some View {
-        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-            Image(systemName: "arrow.clockwise")
-        })
-    }
-    
-    struct OTPView: UIViewControllerRepresentable {
-        func makeUIViewController(context: UIViewControllerRepresentableContext<OTPView>) -> OTPSelectionViewController {
-            OTPSelectionViewController(otpManager: OTPManager())
-        }
-
-        func updateUIViewController(_ uiViewController: OTPSelectionViewController, context: UIViewControllerRepresentableContext<OTPView>) {
-            print("here")
         }
     }
 
