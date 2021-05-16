@@ -45,7 +45,6 @@
 		A9B007C022BD7130000131DE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9B007BE22BD7130000131DE /* Localizable.strings */; };
 		A9C62DA42331CAD400535612 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C62DA32331CAD400535612 /* OSLog.swift */; };
 		A9C62DA52331CAE200535612 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C62DA32331CAD400535612 /* OSLog.swift */; };
-		A9E2DA072623211400AB8C89 /* Base32.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */; platformFilter = ios; };
 		A9E2DA792623251100AB8C89 /* OneTimePassword.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */; platformFilter = ios; };
 		A9E2DA98262351F900AB8C89 /* OTPSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E2DA97262351F900AB8C89 /* OTPSelectionView.swift */; };
 		A9E4153622BC89A300168E14 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153522BC89A300168E14 /* NibLoadable.swift */; };
@@ -188,7 +187,6 @@
 			files = (
 				A91BAC5722BC6D9A00ABF1BB /* LoopKit.framework in Frameworks */,
 				A9E2DA792623251100AB8C89 /* OneTimePassword.framework in Frameworks */,
-				A9E2DA072623211400AB8C89 /* Base32.xcframework in Frameworks */,
 				A993990922BC72B4005E39D3 /* NightscoutUploadKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
