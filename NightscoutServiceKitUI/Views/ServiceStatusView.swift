@@ -14,7 +14,8 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
     @Environment(\.dismiss) private var dismiss
 
     @ObservedObject var viewModel: ServiceStatusViewModel
-    
+    @ObservedObject var otpViewModel: OTPViewModel
+    @State private var selectedItem: String?
     var body: some View {
         VStack {
             Text("Nightscout")
@@ -37,8 +38,15 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                         Spacer()
                         Text(String(describing: viewModel.status))
                     }
+                    NavigationLink(destination: OTPSelectionView(otpViewModel: otpViewModel), tag: "otp-view", selection: $selectedItem) {
+                        HStack {
+                            Text("One-Time Password")
+                            Spacer()
+                            Text(otpViewModel.otpCode)
+                        }
+                    }
                 }
-            }
+            }.refreshOnAppear(selection: $selectedItem) // Hack for https://stackoverflow.com/questions/63934037/swiftui-navigationlink-cell-in-a-form-stays-highlighted-after-detail-pop
             
             Button(action: {
                 viewModel.didLogout?()
@@ -55,5 +63,27 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
         Button(action: dismiss) {
             Text("Done").bold()
         }
+    }
+}
+
+private struct RefreshOnAppearModifier<Tag: Hashable>: ViewModifier {
+    @State private var viewId = UUID()
+    @Binding var selection: Tag?
+    
+    func body(content: Content) -> some View {
+        content
+            .id(viewId)
+            .onAppear {
+                if selection != nil {
+                    viewId = UUID()
+                    selection = nil
+                }
+            }
+    }
+}
+
+private extension View {
+    func refreshOnAppear<Tag: Hashable>(selection: Binding<Tag?>? = nil) -> some View {
+        modifier(RefreshOnAppearModifier(selection: selection ?? .constant(nil)))
     }
 }

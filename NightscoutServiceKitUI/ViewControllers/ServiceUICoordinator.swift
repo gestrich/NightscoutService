@@ -88,7 +88,7 @@ class ServiceUICoordinator: UINavigationController, ServiceCreateNotifying, Serv
         case .status:
             let viewModel = ServiceStatusViewModel(delegate: service!)
             viewModel.didLogout = completeLogout
-            let view = ServiceStatusView(viewModel: viewModel)
+            let view = ServiceStatusView(viewModel: viewModel, otpViewModel: OTPViewModel(otpManager: service!.otpManager))
             let hostedView = hostingController(rootView: view)
             return hostedView
         }
