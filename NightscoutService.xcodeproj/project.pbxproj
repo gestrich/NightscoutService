@@ -28,6 +28,8 @@
 		A922E526265A7B34003C08F2 /* OneTimePassword.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */; platformFilter = ios; };
 		A922E527265A7B34003C08F2 /* OneTimePassword.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A922E529265A7B38003C08F2 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; platformFilter = ios; };
+		A922E52F265A8293003C08F2 /* Base32.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */; };
+		A922E530265A8293003C08F2 /* Base32.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9246B2526231B3A00CCDCB3 /* OTPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9246B2426231B3A00CCDCB3 /* OTPManager.swift */; };
 		A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6152358F42A00949C8B /* StoredDosingDecision.swift */; };
 		A934B6182358F49300949C8B /* StoredSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6172358F49300949C8B /* StoredSettings.swift */; };
@@ -113,6 +115,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				A922E527265A7B34003C08F2 /* OneTimePassword.framework in Embed Frameworks */,
+				A922E530265A8293003C08F2 /* Base32.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A922E529265A7B38003C08F2 /* NightscoutUploadKit.framework in Frameworks */,
+				A922E52F265A8293003C08F2 /* Base32.xcframework in Frameworks */,
 				A91BAC5722BC6D9A00ABF1BB /* LoopKit.framework in Frameworks */,
 				A922E526265A7B34003C08F2 /* OneTimePassword.framework in Frameworks */,
 			);
