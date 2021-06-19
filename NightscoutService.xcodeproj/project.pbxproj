@@ -33,8 +33,6 @@
 		A934B6182358F49300949C8B /* StoredSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6172358F49300949C8B /* StoredSettings.swift */; };
 		A934B61A2358F5FC00949C8B /* TemporaryScheduleOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6192358F5FC00949C8B /* TemporaryScheduleOverride.swift */; };
 		A94DA7642353CF930082E26D /* StoredGlucoseSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94DA7632353CF930082E26D /* StoredGlucoseSample.swift */; };
-		A959BCF8267E35B400EF945E /* Base32.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */; platformFilter = ios; };
-		A959BCF9267E36C500EF945E /* Base32.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990222BC7095005E39D3 /* NightscoutService.swift */; };
 		A993990522BC70B7005E39D3 /* NightscoutService+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990422BC70B7005E39D3 /* NightscoutService+UI.swift */; };
 		A993990A22BC72CF005E39D3 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; };
@@ -113,7 +111,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A959BCF9267E36C500EF945E /* Base32.xcframework in Embed Frameworks */,
 				A922E527265A7B34003C08F2 /* OneTimePassword.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -199,7 +196,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A959BCF8267E35B400EF945E /* Base32.xcframework in Frameworks */,
 				A922E529265A7B38003C08F2 /* NightscoutUploadKit.framework in Frameworks */,
 				A91BAC5722BC6D9A00ABF1BB /* LoopKit.framework in Frameworks */,
 				A922E526265A7B34003C08F2 /* OneTimePassword.framework in Frameworks */,
