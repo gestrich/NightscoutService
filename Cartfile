@@ -1,2 +1,3 @@
 github "LoopKit/LoopKit" "dev"
 github "ps2/rileylink_ios" "dev"
+github "gestrich/OneTimePassword" "dev_otp"

@@ -25,13 +25,16 @@
 		A91BAC5C22BC6DE000ABF1BB /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC5622BC6D9A00ABF1BB /* LoopKit.framework */; };
 		A91BAC5D22BC6E1500ABF1BB /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC5622BC6D9A00ABF1BB /* LoopKit.framework */; };
 		A91BAC5E22BC6E1500ABF1BB /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC5922BC6DA800ABF1BB /* LoopKitUI.framework */; };
+		A922E526265A7B34003C08F2 /* OneTimePassword.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */; platformFilter = ios; };
+		A922E527265A7B34003C08F2 /* OneTimePassword.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A922E529265A7B38003C08F2 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; platformFilter = ios; };
+		A9246B2526231B3A00CCDCB3 /* OTPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9246B2426231B3A00CCDCB3 /* OTPManager.swift */; };
 		A934B6162358F42A00949C8B /* StoredDosingDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6152358F42A00949C8B /* StoredDosingDecision.swift */; };
 		A934B6182358F49300949C8B /* StoredSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6172358F49300949C8B /* StoredSettings.swift */; };
 		A934B61A2358F5FC00949C8B /* TemporaryScheduleOverride.swift in Sources */ = {isa = PBXBuildFile; fileRef = A934B6192358F5FC00949C8B /* TemporaryScheduleOverride.swift */; };
 		A94DA7642353CF930082E26D /* StoredGlucoseSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A94DA7632353CF930082E26D /* StoredGlucoseSample.swift */; };
 		A993990322BC7095005E39D3 /* NightscoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990222BC7095005E39D3 /* NightscoutService.swift */; };
 		A993990522BC70B7005E39D3 /* NightscoutService+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A993990422BC70B7005E39D3 /* NightscoutService+UI.swift */; };
-		A993990922BC72B4005E39D3 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; platformFilter = ios; };
 		A993990A22BC72CF005E39D3 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; };
 		A993990D22BC7307005E39D3 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; };
 		A993990E22BC7333005E39D3 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */; };
@@ -46,9 +49,11 @@
 		A9C62DA52331CAE200535612 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C62DA32331CAD400535612 /* OSLog.swift */; };
 		A9C778BB25BD193900CC680D /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A822BC7AD10016DFE8 /* Bundle.swift */; };
 		A9C778BC25BD193900CC680D /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A822BC7AD10016DFE8 /* Bundle.swift */; };
+		A9E2DA98262351F900AB8C89 /* OTPSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E2DA97262351F900AB8C89 /* OTPSelectionView.swift */; };
 		A9E4153622BC89A300168E14 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153522BC89A300168E14 /* NibLoadable.swift */; };
 		A9E4153822BC89B600168E14 /* IdentifiableClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153722BC89B600168E14 /* IdentifiableClass.swift */; };
 		A9E4153B22BC8A3800168E14 /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4153A22BC8A3800168E14 /* UIColor.swift */; };
+		A9F9ADED263F0F71005C6C48 /* OTPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9ADEC263F0F71005C6C48 /* OTPViewModel.swift */; };
 		C102014D2526C1BA003B6FB7 /* ServiceStatusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C102014C2526C1BA003B6FB7 /* ServiceStatusViewModel.swift */; };
 		C10201552526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10201542526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift */; };
 		C1E703642506BE9400DAB534 /* ObjectIdCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E703632506BE9400DAB534 /* ObjectIdCache.swift */; };
@@ -99,6 +104,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A922E528265A7B34003C08F2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A922E527265A7B34003C08F2 /* OneTimePassword.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		A90E399D22BC76DB0016DFE8 /* TimeInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
 		A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutUploader.swift; sourceTree = "<group>"; };
@@ -119,6 +138,7 @@
 		A91BAC4922BC69B500ABF1BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A91BAC5622BC6D9A00ABF1BB /* LoopKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91BAC5922BC6DA800ABF1BB /* LoopKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9246B2426231B3A00CCDCB3 /* OTPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPManager.swift; sourceTree = "<group>"; };
 		A934B6152358F42A00949C8B /* StoredDosingDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredDosingDecision.swift; sourceTree = "<group>"; };
 		A934B6172358F49300949C8B /* StoredSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredSettings.swift; sourceTree = "<group>"; };
 		A934B6192358F5FC00949C8B /* TemporaryScheduleOverride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryScheduleOverride.swift; sourceTree = "<group>"; };
@@ -152,9 +172,13 @@
 		A9B007E722BD717E000131DE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A9B007E822BD717F000131DE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A9C62DA32331CAD400535612 /* OSLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLog.swift; sourceTree = "<group>"; };
+		A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Base32.xcframework; path = ../OneTimePassword/Carthage/Build/Base32.xcframework; sourceTree = "<group>"; };
+		A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OneTimePassword.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9E2DA97262351F900AB8C89 /* OTPSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPSelectionView.swift; sourceTree = "<group>"; };
 		A9E4153522BC89A300168E14 /* NibLoadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
 		A9E4153722BC89B600168E14 /* IdentifiableClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableClass.swift; sourceTree = "<group>"; };
 		A9E4153A22BC8A3800168E14 /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		A9F9ADEC263F0F71005C6C48 /* OTPViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPViewModel.swift; sourceTree = "<group>"; };
 		C102014C2526C1BA003B6FB7 /* ServiceStatusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStatusViewModel.swift; sourceTree = "<group>"; };
 		C10201542526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NightscoutService+ServiceStatusViewModelDelegate.swift"; sourceTree = "<group>"; };
 		C1E703632506BE9400DAB534 /* ObjectIdCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectIdCache.swift; sourceTree = "<group>"; };
@@ -172,8 +196,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A922E529265A7B38003C08F2 /* NightscoutUploadKit.framework in Frameworks */,
 				A91BAC5722BC6D9A00ABF1BB /* LoopKit.framework in Frameworks */,
-				A993990922BC72B4005E39D3 /* NightscoutUploadKit.framework in Frameworks */,
+				A922E526265A7B34003C08F2 /* OneTimePassword.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,6 +292,7 @@
 			isa = PBXGroup;
 			children = (
 				A91BAC1E22BC691A00ABF1BB /* NightscoutServiceKit.h */,
+				A9246B2426231B3A00CCDCB3 /* OTPManager.swift */,
 				A91BAC1F22BC691A00ABF1BB /* Info.plist */,
 				A993990222BC7095005E39D3 /* NightscoutService.swift */,
 				C1E703632506BE9400DAB534 /* ObjectIdCache.swift */,
@@ -311,8 +337,10 @@
 		A91BAC5522BC6D9900ABF1BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9E2D9D926231DAC00AB8C89 /* Base32.xcframework */,
 				A91BAC5622BC6D9A00ABF1BB /* LoopKit.framework */,
 				A91BAC5922BC6DA800ABF1BB /* LoopKitUI.framework */,
+				A9E2D9E726231DCC00AB8C89 /* OneTimePassword.framework */,
 				A993990822BC72B4005E39D3 /* NightscoutUploadKit.framework */,
 			);
 			name = Frameworks;
@@ -362,6 +390,7 @@
 			children = (
 				C1E7038B2507117900DAB534 /* CredentialsView.swift */,
 				C1EBB089252596EA000D9680 /* ServiceStatusView.swift */,
+				A9E2DA97262351F900AB8C89 /* OTPSelectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -380,6 +409,7 @@
 				C1E7038D2507131400DAB534 /* CredentialsViewModel.swift */,
 				C1E70394250725AA00DAB534 /* KeyboardObserver.swift */,
 				C102014C2526C1BA003B6FB7 /* ServiceStatusViewModel.swift */,
+				A9F9ADEC263F0F71005C6C48 /* OTPViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -422,6 +452,7 @@
 				A91BAC1722BC691A00ABF1BB /* Sources */,
 				A91BAC1822BC691A00ABF1BB /* Frameworks */,
 				A91BAC1922BC691A00ABF1BB /* Resources */,
+				A922E528265A7B34003C08F2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -694,6 +725,7 @@
 				A94DA7642353CF930082E26D /* StoredGlucoseSample.swift in Sources */,
 				C1E703642506BE9400DAB534 /* ObjectIdCache.swift in Sources */,
 				A90E39A722BC7A360016DFE8 /* HKUnit.swift in Sources */,
+				A9246B2526231B3A00CCDCB3 /* OTPManager.swift in Sources */,
 				A90E399E22BC76DB0016DFE8 /* TimeInterval.swift in Sources */,
 				A90E39A122BC773A0016DFE8 /* NightscoutUploader.swift in Sources */,
 				A9B007B322BD6FF7000131DE /* LocalizedString.swift in Sources */,
@@ -724,10 +756,12 @@
 				C10201552526D3E8003B6FB7 /* NightscoutService+ServiceStatusViewModelDelegate.swift in Sources */,
 				C1E703932507193400DAB534 /* Image.swift in Sources */,
 				A993990522BC70B7005E39D3 /* NightscoutService+UI.swift in Sources */,
+				A9F9ADED263F0F71005C6C48 /* OTPViewModel.swift in Sources */,
 				C1E7038E2507131400DAB534 /* CredentialsViewModel.swift in Sources */,
 				C1E70395250725AA00DAB534 /* KeyboardObserver.swift in Sources */,
 				A9C62DA52331CAE200535612 /* OSLog.swift in Sources */,
 				A9E4153B22BC8A3800168E14 /* UIColor.swift in Sources */,
+				A9E2DA98262351F900AB8C89 /* OTPSelectionView.swift in Sources */,
 				C1E7038C2507117900DAB534 /* CredentialsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1041,10 +1075,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5K844XFC6W;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1068,10 +1103,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5K844XFC6W;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

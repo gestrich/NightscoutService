@@ -27,6 +27,8 @@ public final class NightscoutService: Service {
     
     public var isOnboarded: Bool
 
+    public let otpManager: OTPManager
+    
     /// Maps loop syncIdentifiers to Nightscout objectIds
     var objectIdCache: ObjectIdCache {
         get {
@@ -50,6 +52,7 @@ public final class NightscoutService: Service {
     public init() {
         self.isOnboarded = false
         self.lockedObjectIdCache = Locked(ObjectIdCache())
+        self.otpManager = OTPManager()
     }
 
     public required init?(rawState: RawStateValue) {
@@ -62,6 +65,8 @@ public final class NightscoutService: Service {
         } else {
             self.lockedObjectIdCache = Locked(ObjectIdCache())
         }
+        
+        self.otpManager = OTPManager()
         
         restoreCredentials()
     }
@@ -231,7 +236,18 @@ extension NightscoutService: RemoteDataService {
 
         uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
     }
+    
+    public func validatePushNotificationSource(_ notification: [String: AnyObject]) -> Bool {
+        
+        let otpCurrent = otpManager.otp()
+        
+        guard let otpToValidate = notification["otp"] as? String else {
+            return false
+        }
 
+        return otpToValidate.count == 6 && otpToValidate == otpCurrent;
+    }
+    
 }
 
 extension KeychainManager {
