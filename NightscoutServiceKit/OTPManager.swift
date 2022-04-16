@@ -70,7 +70,8 @@ public class OTPManager {
     
     private var secretStore: OTPSecretStore
     private var nowDateSource: () -> Date
-    let algorithm: Generator.Algorithm = .sha512
+    let algorithm: Generator.Algorithm = .sha1
+    let issuerName = "Loop"
     var tokenPeriod: TimeInterval
     var passwordDigitCount = 6
     public static var defaultTokenPeriod: TimeInterval = 30
@@ -143,7 +144,7 @@ public class OTPManager {
         }
         
         let generator = Generator(factor: .timer(period: TimeInterval(self.tokenPeriod)), secret: secretKeyData, algorithm: algorithm, digits: passwordDigitCount)!
-        return Token(name: "\(secretKeyName)", issuer: "Loop", generator: generator)
+        return Token(name: secretKeyName, issuer: issuerName, generator: generator)
     }
     
     public func getLastPasswordsAscending(count: Int) -> [String] {
@@ -183,7 +184,7 @@ public class OTPManager {
         let queryItems = [
             URLQueryItem(name: "algorithm", value: algorithm.otpURLStringComponent()),
             URLQueryItem(name: "digits", value: "\(passwordDigitCount)"),
-            URLQueryItem(name: "issuer", value: "Loop"),
+            URLQueryItem(name: "issuer", value: issuerName),
             URLQueryItem(name: "period", value: "\(Int(tokenPeriod))"),
             URLQueryItem(name: "secret", value: secretKey),
         ]
