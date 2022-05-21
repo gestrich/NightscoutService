@@ -13,7 +13,6 @@
 		A90E39A522BC791E0016DFE8 /* DoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A422BC791E0016DFE8 /* DoseEntry.swift */; };
 		A90E39A722BC7A360016DFE8 /* HKUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A622BC7A360016DFE8 /* HKUnit.swift */; };
 		A90E39A922BC7AD10016DFE8 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90E39A822BC7AD10016DFE8 /* Bundle.swift */; };
-		A915719E23329845005429E1 /* DiagnosticLog+Subsystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A915719D23329845005429E1 /* DiagnosticLog+Subsystem.swift */; };
 		A91BAC2522BC691A00ABF1BB /* NightscoutServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC1B22BC691A00ABF1BB /* NightscoutServiceKit.framework */; };
 		A91BAC2C22BC691A00ABF1BB /* NightscoutServiceKit.h in Headers */ = {isa = PBXBuildFile; fileRef = A91BAC1E22BC691A00ABF1BB /* NightscoutServiceKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A91BAC4322BC69B500ABF1BB /* NightscoutServiceKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC3A22BC69B500ABF1BB /* NightscoutServiceKitUI.framework */; };
@@ -135,7 +134,6 @@
 		A90E39A422BC791E0016DFE8 /* DoseEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoseEntry.swift; sourceTree = "<group>"; };
 		A90E39A622BC7A360016DFE8 /* HKUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKUnit.swift; sourceTree = "<group>"; };
 		A90E39A822BC7AD10016DFE8 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
-		A915719D23329845005429E1 /* DiagnosticLog+Subsystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DiagnosticLog+Subsystem.swift"; sourceTree = "<group>"; };
 		A91BAC1B22BC691A00ABF1BB /* NightscoutServiceKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutServiceKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91BAC1E22BC691A00ABF1BB /* NightscoutServiceKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutServiceKit.h; sourceTree = "<group>"; };
 		A91BAC1F22BC691A00ABF1BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -274,7 +272,6 @@
 		A90E399F22BC77220016DFE8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				A915719D23329845005429E1 /* DiagnosticLog+Subsystem.swift */,
 				A90E39A422BC791E0016DFE8 /* DoseEntry.swift */,
 				A90E39A622BC7A360016DFE8 /* HKUnit.swift */,
 				A90E39A022BC773A0016DFE8 /* NightscoutUploader.swift */,
@@ -750,7 +747,6 @@
 				A90E39A922BC7AD10016DFE8 /* Bundle.swift in Sources */,
 				A90E39A322BC782C0016DFE8 /* SyncCarbObject.swift in Sources */,
 				A934B61A2358F5FC00949C8B /* TemporaryScheduleOverride.swift in Sources */,
-				A915719E23329845005429E1 /* DiagnosticLog+Subsystem.swift in Sources */,
 				A94DA7642353CF930082E26D /* StoredGlucoseSample.swift in Sources */,
 				C1E703642506BE9400DAB534 /* ObjectIdCache.swift in Sources */,
 				C1398D2027C41E3D00416AD6 /* ProfileSet.swift in Sources */,
