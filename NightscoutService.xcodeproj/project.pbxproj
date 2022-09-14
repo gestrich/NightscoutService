@@ -134,6 +134,7 @@
 		A91BAC3A22BC69B500ABF1BB /* NightscoutServiceKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutServiceKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91BAC3C22BC69B500ABF1BB /* NightscoutServiceKitUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutServiceKitUI.h; sourceTree = "<group>"; };
 		A91BAC3D22BC69B500ABF1BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A923A22928D28038005F762B /* Loop Remote.shortcut */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Loop Remote.shortcut"; sourceTree = "<group>"; };
 		A9246B2426231B3A00CCDCB3 /* OTPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTPManager.swift; sourceTree = "<group>"; };
 		A934B6152358F42A00949C8B /* StoredDosingDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredDosingDecision.swift; sourceTree = "<group>"; };
 		A934B6172358F49300949C8B /* StoredSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredSettings.swift; sourceTree = "<group>"; };
@@ -302,6 +303,7 @@
 				A91BAC1F22BC691A00ABF1BB /* Info.plist */,
 				A993990222BC7095005E39D3 /* NightscoutService.swift */,
 				C1E703632506BE9400DAB534 /* ObjectIdCache.swift */,
+				A923A22928D28038005F762B /* Loop Remote.shortcut */,
 				A90E399F22BC77220016DFE8 /* Extensions */,
 				A9B007BB22BD7120000131DE /* Localizable.strings */,
 			);
