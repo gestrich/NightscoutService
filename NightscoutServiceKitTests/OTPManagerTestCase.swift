@@ -21,70 +21,121 @@ class OTPManagerTestCase: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testRecentPasswordsFixedTime() throws {
-        let sequenceData = getTestSequence()
-        let mockStore = MockSecretStore(testSequence: sequenceData)
-        let manager = OTPManager(secretStore: mockStore, nowDateSource: {sequenceData.endDate})
-        XCTAssertEqual(manager.getLastPasswordsAscending(count: 2), sequenceData.otpAscendingPasswords)
-    }
-    
-    func testRecentPasswordsIncludesCurrent() throws {
-        let sequenceData = getTestSequence()
-        let mockStore = MockSecretStore(testSequence: sequenceData)
-        let manager = OTPManager(secretStore: mockStore, nowDateSource: {sequenceData.endDate})
-        XCTAssertEqual(sequenceData.otpAscendingPasswords.last!, manager.currentPassword()!)
-    }
-    
-    func testValidation() throws {
+    func testGetLastPasswords_ProvidesLatestOTPs() throws {
         
+        //Arrange
+        let sequenceData = getTestSequence()
+        let mockStore = MockSecretStore(testSequence: sequenceData)
+        let manager = OTPManager(secretStore: mockStore, nowDateSource: {sequenceData.endDate})
+        
+        //Act
+        let lastPasswords = manager.getLastPasswordsAscending(count: sequenceData.otpAscendingPasswords.count)
+        
+        //Assert
+        let expectedLatestPasswords = sequenceData.otpAscendingPasswords
+        XCTAssertEqual(lastPasswords, expectedLatestPasswords)
+    }
+    
+    func testCurrentPassword_ProvidesCurrentOTP() throws {
+        
+        //Arrange
+        let sequenceData = getTestSequence()
+        let mockStore = MockSecretStore(testSequence: sequenceData)
+        let manager = OTPManager(secretStore: mockStore, nowDateSource: {sequenceData.endDate})
+        
+        //Act
+        let currentPassword = sequenceData.otpAscendingPasswords.last!
+        
+        //Assert
+        let expectedCurrentPassword = manager.currentPassword()!
+        XCTAssertEqual(currentPassword, expectedCurrentPassword)
+    }
+
+    func testValidateOTP_WhenOldestAcceptedPasswordUsed_Succeeds() throws {
+        
+        //Arrange
+        let maxOTPsToAccept = 2
+        let sequenceData = getTestSequence(count: maxOTPsToAccept)
+        let mockStore = MockSecretStore(testSequence: sequenceData)
+        let manager = OTPManager(secretStore: mockStore, nowDateSource: {sequenceData.endDate}, maxOTPsToAccept: maxOTPsToAccept)
+        let oldestPassword = sequenceData.otpAscendingPasswords.first!
+        
+        //Act + Assert
+        XCTAssertNoThrow(try manager.validateOTP(otpToValidate: oldestPassword))
+    }
+    
+    func testValidateOTP_WhenExpiredPasswordUsed_Throws() throws {
+        
+        //Arrange
+        let maxOTPsToAccept = 2
+        let sequenceData = getTestSequence(count: maxOTPsToAccept + 1) // Request 1 more than we accept so we get an expired one to test
+        let mockStore = MockSecretStore(testSequence: sequenceData)
+        let manager = OTPManager(secretStore:  mockStore, nowDateSource: {sequenceData.endDate})
+        let expiredPassword = sequenceData.otpAscendingPasswords.first!
+        
+        //Act + Assert
+        XCTAssertThrowsError(try manager.validateOTP(otpToValidate: expiredPassword))
+    }
+    
+    func testValidateOTP_WhenPasswordReused_Throws() throws {
+        
+        //Arrange
         let sequenceData = getTestSequence()
         let mockStore = MockSecretStore(testSequence: sequenceData)
         let mockDateSource = MockDateSource()
         let manager = OTPManager(secretStore: mockStore, nowDateSource: {mockDateSource.currentDate})
+        let password = sequenceData.otpAscendingPasswords.last!
+        mockDateSource.currentDate = sequenceData.endDate
+        try manager.validateOTP(otpToValidate: password)
         
-        mockDateSource.currentDate = sequenceData.otpAscendingDates()[0] //Get first date
-        XCTAssertEqual(manager.currentPassword(), sequenceData.otpAscendingPasswords[0])
-        XCTAssertTrue(manager.validateOTP(otpToValidate: sequenceData.otpAscendingPasswords[0]))
-        XCTAssertFalse(manager.validateOTP(otpToValidate: sequenceData.otpAscendingPasswords[0])) //Reject reuse
-        
-        //Advance clock to next interval and try next code
-        mockDateSource.currentDate = mockDateSource.currentDate.addingTimeInterval(manager.tokenPeriod)
-        XCTAssertEqual(manager.currentPassword(), sequenceData.otpAscendingPasswords[1])
-        XCTAssertTrue(manager.validateOTP(otpToValidate: sequenceData.otpAscendingPasswords[1]))
-        XCTAssertFalse(manager.validateOTP(otpToValidate: sequenceData.otpAscendingPasswords[1])) //Reject reuse
+        //Act + Assert
+        XCTAssertThrowsError(try manager.validateOTP(otpToValidate: password))
     }
     
-    func getTestSequence() -> OTPTestSequence {
+    func testValidateOTP_WhenOTPInsertionFails_Throws() throws {
+        
+        //Arrange
+        let sequenceData = getTestSequence()
+        let mockStore = MockSecretStore(testSequence: sequenceData)
+        mockStore.simulateFailedPasswordInsertion = true
+        let manager = OTPManager(secretStore: mockStore, nowDateSource: {sequenceData.endDate})
+        let password = sequenceData.otpAscendingPasswords.last!
+        
+        //Act + Assert
+        XCTAssertThrowsError(try manager.validateOTP(otpToValidate: password))
+    }
+    
+    func getTestSequence(count: Int? = nil) -> OTPTestSequence {
+        
         /*
          To get sequence of OTP codes from an independent source for these tests:
          
          1. Go to https://cryptotools.net/otp
-         2. Copy the test secretKey below to website
-         3. Note the Epoch time from site
-         4. Note the next 2 consecutive codes
-         5. Update the endDate below with (epoch time + 30)
-         6. Update codes below
+         2. Paste the test secretKey below to site
+         3. Capture the Epoch time from site
+         4. Capture 4 consecutive codes
+         5. Update the startDate below
+         6. Update otps below
+         
          */
-        return OTPTestSequence(secretKey: "2IOF4MG5QSAKMIYD6QJKOBZFH2QV2CYG", tokenName: "Test Key", endDate: Date(timeIntervalSince1970: 1655326953), otpAscendingPasswords: ["928595", "278849"])
+        
+        let startDate = Date(timeIntervalSince1970: 1670001615)
+        var otps = ["306469", "649742", "881201", "086432"]
+        
+        if let count = count {
+            otps = Array(otps[0..<count])
+        }
+        
+        return OTPTestSequence(secretKey: "2IOF4MG5QSAKMIYD6QJKOBZFH2QV2CYG", tokenName: "Test Key", startDate: startDate, otpAscendingPasswords: otps)
     }
 }
 
 struct OTPTestSequence {
     let secretKey: String
     let tokenName: String
-    let endDate: Date
+    let startDate: Date
+    var endDate: Date { startDate.addingTimeInterval(TimeInterval(otpAscendingPasswords.count - 1) * OTPManager.defaultTokenPeriod)}
     let otpAscendingPasswords: [String]
-    
-    func otpAscendingDates() -> [Date] {
-        var datesDescending = [Date]()
-        for (index, _) in otpAscendingPasswords.reversed().enumerated() {
-            //Array reversed so index 0 is newest OTP.
-            let date = endDate.addingTimeInterval( TimeInterval(index) * -OTPManager.defaultTokenPeriod)
-            datesDescending.append(date)
-        }
-        //Reverse again to put back in ascending order
-        return datesDescending.reversed()
-    }
 }
 
 class MockSecretStore: OTPSecretStore {
@@ -92,6 +143,7 @@ class MockSecretStore: OTPSecretStore {
     var secretKey: String?
     var keyName: String?
     var recentlyAcceptedPasswords = [String]()
+    var simulateFailedPasswordInsertion: Bool = false
     
     init(secretKey: String?, keyCreated: String?){
         self.secretKey = secretKey
@@ -123,15 +175,22 @@ class MockSecretStore: OTPSecretStore {
     }
     
     func setRecentAcceptedPasswords(_ passwords: [String]) throws {
+        if self.simulateFailedPasswordInsertion {
+            throw MockSecretStoreError.passwordInsertion
+        }
         self.recentlyAcceptedPasswords = passwords
+    }
+    
+    enum MockSecretStoreError: Error {
+        case passwordInsertion
     }
 }
 
 class MockDateSource {
     
+    var currentDate: Date
+    
     init(currentDate: Date = Date()){
         self.currentDate = currentDate
     }
-    
-    var currentDate: Date
 }

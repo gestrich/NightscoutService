@@ -333,10 +333,18 @@ extension NightscoutService: RemoteDataService {
     
     public func validatePushNotificationSource(_ notification: [String: AnyObject]) -> Bool {
         guard let otpToValidate = notification["otp"] as? String else {
+            log.error("Missing OTP")
             return false
         }
-
-        return otpManager.validateOTP(otpToValidate: otpToValidate)
+        
+        do {
+            try otpManager.validateOTP(otpToValidate: otpToValidate)
+        } catch {
+            log.error("OTP validation error: %{public}@", String(describing: error))
+            return false
+        }
+        
+        return true
     }
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
