@@ -385,9 +385,9 @@ extension NightscoutService: RemoteDataService {
         var errorDescription: String? {
             switch self {
             case .missingOTP:
-                return "Error: OTP code is required."
+                return "Error: Password is required."
             case .missingOTPGenerationDate:
-                return "Error: OTP generation date is required."
+                return "Error: Password generation date missing."
             }
         }
     }

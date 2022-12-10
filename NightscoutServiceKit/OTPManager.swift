@@ -247,19 +247,19 @@ public class OTPManager {
         var errorDescription: String? {
             switch self {
             case .missingOTP:
-                return "Error: OTP is required."
+                return "Error: Password is required."
             case .expired(let deliveryDate, let maxOTPsToAccept):
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "h:mm"
-                return String(format: "Error: OTP sent at %@ has expired. Only the last %u OTPs are accepted. See LoopDocs for troubleshooting.", dateFormatter.string(from: deliveryDate), maxOTPsToAccept)
+                return String(format: "Error: Password sent at %@ has expired. Only the last %u passwords are accepted. See LoopDocs for troubleshooting.", dateFormatter.string(from: deliveryDate), maxOTPsToAccept)
             case .previouslyUsed(let otp):
-                return "Error: OTP \(otp) was already used. Wait for a new OTP for each command."
+                return "Error: Password \(otp) was already used. Wait for a new password for each command."
             case .invalidFormat(let otp):
-                return "Error: OTP has an invalid format: \(otp)."
+                return "Error: Password has an invalid format: \(otp)."
             case .incorrectOTP(let otp):
-                return "Error: OTP is incorrect: \(otp)."
+                return "Error: Password is incorrect: \(otp)."
             case .codeGeneratorFailed:
-                return "Error: OTP validation is not available. See LoopDocs to setup."
+                return "Error: Password validation is not available. See LoopDocs to setup."
             }
         }
     }
