@@ -331,20 +331,30 @@ extension NightscoutService: RemoteDataService {
         uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
     }
     
-    public func validatePushNotificationSource(_ notification: [String: AnyObject]) -> Bool {
-        guard let otpToValidate = notification["otp"] as? String else {
-            log.error("Missing OTP")
-            return false
+    public func validatePushNotificationSource(_ notification: [String: AnyObject]) -> Result<Void, Error> {
+        
+        guard let password = notification["otp"] as? String else {
+            return .failure(NotificationValidationError.missingOTP)
+        }
+        
+        guard let deliveryDateString = notification["sent-at"] as? String else {
+            return .failure(NotificationValidationError.missingOTPGenerationDate)
+        }
+        
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
+        
+        guard let deliveryDate = formatter.date(from: deliveryDateString) else {
+            return .failure(NotificationValidationError.missingOTPGenerationDate)
         }
         
         do {
-            try otpManager.validateOTP(otpToValidate: otpToValidate)
+            try otpManager.validatePassword(password: password, deliveryDate: deliveryDate)
+            return .success(Void())
         } catch {
             log.error("OTP validation error: %{public}@", String(describing: error))
-            return false
+            return .failure(error)
         }
-        
-        return true
     }
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
@@ -366,6 +376,20 @@ extension NightscoutService: RemoteDataService {
                 completion(.failure(error))
             }
         })
+    }
+    
+    enum NotificationValidationError: LocalizedError {
+        case missingOTP
+        case missingOTPGenerationDate
+        
+        var errorDescription: String? {
+            switch self {
+            case .missingOTP:
+                return "Error: OTP code is required."
+            case .missingOTPGenerationDate:
+                return "Error: OTP generation date is required."
+            }
+        }
     }
 
 }
