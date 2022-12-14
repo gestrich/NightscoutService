@@ -84,7 +84,7 @@ class OTPManagerTestCase: XCTestCase {
         //Arrange
         let testCoordinator = OTPTestCoordinator()
         let manager = testCoordinator.createOTPManager()
-        let randomOTP = "12345"
+        let randomOTP = "123456"
         
         //Act
         var thrownError: Error? = nil
