@@ -337,15 +337,11 @@ extension NightscoutService: RemoteDataService {
             return .failure(NotificationValidationError.missingOTP)
         }
         
-        guard let deliveryDateString = notification["sent-at"] as? String else {
-            return .failure(NotificationValidationError.missingOTPGenerationDate)
-        }
-        
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
-        
-        guard let deliveryDate = formatter.date(from: deliveryDateString) else {
-            return .failure(NotificationValidationError.missingOTPGenerationDate)
+        var deliveryDate: Date? = nil
+        if let deliveryDateString = notification["sent-at"] as? String {
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
+            deliveryDate = formatter.date(from: deliveryDateString)
         }
         
         do {
@@ -380,14 +376,11 @@ extension NightscoutService: RemoteDataService {
     
     enum NotificationValidationError: LocalizedError {
         case missingOTP
-        case missingOTPGenerationDate
         
         var errorDescription: String? {
             switch self {
             case .missingOTP:
                 return "Error: Password is required."
-            case .missingOTPGenerationDate:
-                return "Error: Password generation date missing."
             }
         }
     }

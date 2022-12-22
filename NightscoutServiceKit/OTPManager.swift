@@ -89,7 +89,7 @@ public class OTPManager {
         }
     }
     
-    public func validatePassword(password: String, deliveryDate: Date) throws {
+    public func validatePassword(password: String, deliveryDate: Date?) throws {
         
         guard password.count == passwordDigitCount else {
             throw OTPValidationError.invalidFormat(otp: password)
@@ -238,7 +238,7 @@ public class OTPManager {
     
     enum OTPValidationError: LocalizedError {
         case missingOTP
-        case expired(deliveryDate: Date, maxOTPsToAccept: Int)
+        case expired(deliveryDate: Date?, maxOTPsToAccept: Int)
         case previouslyUsed(otp: String)
         case incorrectOTP(otp: String)
         case invalidFormat(otp: String)
@@ -249,9 +249,13 @@ public class OTPManager {
             case .missingOTP:
                 return "Error: Password is required."
             case .expired(let deliveryDate, let maxOTPsToAccept):
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "h:mm"
-                return String(format: "Error: Password sent at %@ has expired. Only the last %u passwords are accepted. See LoopDocs for troubleshooting.", dateFormatter.string(from: deliveryDate), maxOTPsToAccept)
+                if let deliveryDate = deliveryDate {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "h:mm"
+                    return String(format: "Error: Password sent at %@ has expired. Only the last %u passwords are accepted. See LoopDocs for troubleshooting.", dateFormatter.string(from: deliveryDate), maxOTPsToAccept)
+                } else {
+                    return String(format: "Error: Password has expired. See LoopDocs for troubleshooting.", maxOTPsToAccept)
+                }
             case .previouslyUsed(let otp):
                 return "Error: Password \(otp) was already used. Wait for a new password for each command."
             case .invalidFormat(let otp):
