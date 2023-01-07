@@ -48,8 +48,6 @@
 		C1B9ACF827DE987400857532 /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = C1B9ACF727DE987400857532 /* OneTimePassword */; };
 		C1B9ACF927DE995C00857532 /* NightscoutUploadKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C130B6F727DD4CD000173048 /* NightscoutUploadKit.framework */; };
 		C1B9ACFC27DE99D600857532 /* NightscoutUploadKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C130B6F727DD4CD000173048 /* NightscoutUploadKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C1B9AD0027DE9AD800857532 /* Crypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1B9ACFF27DE9AD800857532 /* Crypto.framework */; };
-		C1B9AD0127DE9AEC00857532 /* Crypto.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C1B9ACFF27DE9AD800857532 /* Crypto.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C1C1349627DD35060097B5AD /* LoopKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349527DD35060097B5AD /* LoopKit.framework */; };
 		C1C1349827DD35260097B5AD /* LoopKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1C1349727DD35260097B5AD /* LoopKitUI.framework */; };
 		C1C1349D27DD38000097B5AD /* NightscoutServiceKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A91BAC3A22BC69B500ABF1BB /* NightscoutServiceKitUI.framework */; };
@@ -110,7 +108,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C1B9AD0127DE9AEC00857532 /* Crypto.framework in Embed Frameworks */,
 				C1C1349E27DD38000097B5AD /* NightscoutServiceKitUI.framework in Embed Frameworks */,
 				C1B9ACFC27DE99D600857532 /* NightscoutUploadKit.framework in Embed Frameworks */,
 			);
@@ -244,7 +241,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1C1349D27DD38000097B5AD /* NightscoutServiceKitUI.framework in Frameworks */,
-				C1B9AD0027DE9AD800857532 /* Crypto.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
