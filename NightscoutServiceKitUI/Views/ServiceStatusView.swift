@@ -15,6 +15,8 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
 
     @ObservedObject var viewModel: ServiceStatusViewModel
     @ObservedObject var otpViewModel: OTPViewModel
+    @ObservedObject var remoteCommandsViewModel: RemoteCommandsViewModel
+    
     @State private var selectedItem: String?
     var body: some View {
         VStack {
@@ -47,6 +49,16 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                         Text("One-Time Password")
                         Spacer()
                         Text(otpViewModel.otpCode)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                    }
+                }.foregroundColor(Color.primary)
+                .padding()
+                Divider()
+                NavigationLink(destination: RemoteCommandsView(viewModel: remoteCommandsViewModel), tag: "remote-commands", selection: $selectedItem) {
+                    HStack {
+                        Text("Remote Commands")
+                        Spacer()
                         Image(systemName: "chevron.right")
                             .font(.caption)
                     }
