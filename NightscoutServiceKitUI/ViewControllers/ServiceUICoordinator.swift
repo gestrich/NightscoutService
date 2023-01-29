@@ -87,9 +87,10 @@ class ServiceUICoordinator: UINavigationController, ServiceOnboarding, Completio
             let hostedView = hostingController(rootView: view)
             return hostedView
         case .status:
-            let viewModel = ServiceStatusViewModel(delegate: service!)
+            let viewModel = ServiceStatusViewModel(delegate: service!, remoteCommandsViewModelDelegate: service!)
             viewModel.didLogout = completeLogout
-            let view = ServiceStatusView(viewModel: viewModel, otpViewModel: OTPViewModel(otpManager: service!.otpManager))
+            let remoteCommandsViewModel = RemoteCommandsViewModel(delegate: service!)
+            let view = ServiceStatusView(viewModel: viewModel, otpViewModel: OTPViewModel(otpManager: service!.otpManager), remoteCommandsViewModel: remoteCommandsViewModel)
             let hostedView = hostingController(rootView: view)
             return hostedView
         }
