@@ -57,6 +57,8 @@ public final class NightscoutService: Service {
         }
         return _uploader
     }
+    
+    private let commandSourceV1: RemoteCommandSourceV1
 
     private let log = OSLog(category: "NightscoutService")
 
@@ -64,6 +66,7 @@ public final class NightscoutService: Service {
         self.isOnboarded = false
         self.lockedObjectIdCache = Locked(ObjectIdCache())
         self.otpManager = OTPManager(secretStore: KeychainManager())
+        self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
     }
 
     public required init?(rawState: RawStateValue) {
@@ -78,6 +81,7 @@ public final class NightscoutService: Service {
         }
         
         self.otpManager = OTPManager(secretStore: KeychainManager())
+        self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
         
         restoreCredentials()
     }
@@ -331,25 +335,24 @@ extension NightscoutService: RemoteDataService {
         uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
     }
     
-    public func validatePushNotificationSource(_ notification: [String: AnyObject]) -> Result<Void, Error> {
+    
+    //MARK: Remote Commands
+    
+    public func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand {
+        let commandSource = try remoteCommandSource(notification: notification)
+        return try await commandSource.commandFromPushNotification(notification)
+    }
+    
+    private func remoteCommandSource(notification: [String: AnyObject]) throws -> RemoteCommandSource {
         
-        guard let password = notification["otp"] as? String else {
-            return .failure(NotificationValidationError.missingOTP)
+        enum RemoteCommandSourceError: Error {
+            case missingCommandSource
         }
         
-        var deliveryDate: Date? = nil
-        if let deliveryDateString = notification["sent-at"] as? String {
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
-            deliveryDate = formatter.date(from: deliveryDateString)
-        }
-        
-        do {
-            try otpManager.validatePassword(password: password, deliveryDate: deliveryDate)
-            return .success(Void())
-        } catch {
-            log.error("OTP validation error: %{public}@", String(describing: error))
-            return .failure(error)
+        if commandSourceV1.supportsPushNotification(notification) {
+            return commandSourceV1
+        } else {
+            throw RemoteCommandSourceError.missingCommandSource
         }
     }
     
