@@ -57,6 +57,14 @@ public final class NightscoutService: Service {
         }
         return _uploader
     }
+    
+    private let commandSourceV1: RemoteCommandSourceV1
+    private var commandSourceV2: RemoteCommandSourceV2? {
+        get {
+            guard let uploader = uploader else { return nil }
+            return RemoteCommandSourceV2(otpManager: otpManager, nightscoutClient: uploader)
+        }
+    }
 
     private let log = OSLog(category: "NightscoutService")
 
@@ -64,6 +72,7 @@ public final class NightscoutService: Service {
         self.isOnboarded = false
         self.lockedObjectIdCache = Locked(ObjectIdCache())
         self.otpManager = OTPManager(secretStore: KeychainManager())
+        self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
     }
 
     public required init?(rawState: RawStateValue) {
@@ -78,6 +87,7 @@ public final class NightscoutService: Service {
         }
         
         self.otpManager = OTPManager(secretStore: KeychainManager())
+        self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
         
         restoreCredentials()
     }
@@ -331,27 +341,54 @@ extension NightscoutService: RemoteDataService {
         uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
     }
     
-    public func validatePushNotificationSource(_ notification: [String: AnyObject]) -> Result<Void, Error> {
+    
+    //MARK: Remote Commands
+    
+    public func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand {
         
-        guard let password = notification["otp"] as? String else {
-            return .failure(NotificationValidationError.missingOTP)
+        enum RemoteCommandSourceError: Error {
+            case missingCommandSource
         }
         
-        var deliveryDate: Date? = nil
-        if let deliveryDateString = notification["sent-at"] as? String {
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
-            deliveryDate = formatter.date(from: deliveryDateString)
+        let commandSource: RemoteCommandSource
+        if let commandSourceV2 = commandSourceV2, commandSourceV2.supportsPushNotification(notification) {
+            commandSource = commandSourceV2
+        } else if commandSourceV1.supportsPushNotification(notification) {
+            commandSource = commandSourceV1
+        } else {
+            throw RemoteCommandSourceError.missingCommandSource
         }
         
-        do {
-            try otpManager.validatePassword(password: password, deliveryDate: deliveryDate)
-            return .success(Void())
-        } catch {
-            log.error("OTP validation error: %{public}@", String(describing: error))
-            return .failure(error)
-        }
+        return try await commandSource.commandFromPushNotification(notification)
     }
+    
+    public func fetchRemoteCommands() async throws -> [RemoteCommand] {
+        var result = [RemoteCommand]()
+        for source in commandSources() {
+            result += try await source.fetchRemoteCommands()
+        }
+        return result
+    }
+    
+    public func fetchPendingRemoteCommands() async throws -> [RemoteCommand] {
+        var result = [RemoteCommand]()
+        for source in commandSources() {
+            result += try await source.fetchPendingRemoteCommands()
+        }
+        return result
+    }
+    
+    private func commandSources() -> [RemoteCommandSource] {
+        var result = [RemoteCommandSource]()
+        result.append(commandSourceV1)
+        if let commandSourceV2 {
+            result.append(commandSourceV2)
+        }
+        return result
+    }
+    
+    
+    //MARK: Therapy Settings
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
         guard let uploader = uploader else {
@@ -372,17 +409,6 @@ extension NightscoutService: RemoteDataService {
                 completion(.failure(error))
             }
         })
-    }
-    
-    enum NotificationValidationError: LocalizedError {
-        case missingOTP
-        
-        var errorDescription: String? {
-            switch self {
-            case .missingOTP:
-                return "Error: Password is required."
-            }
-        }
     }
 
 }

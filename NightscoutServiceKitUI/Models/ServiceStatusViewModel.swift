@@ -39,14 +39,16 @@ class ServiceStatusViewModel: ObservableObject {
     @Published var status: ServiceStatus = .checking
         
     let delegate: ServiceStatusViewModelDelegate
+    let remoteCommandsViewModelDelegate: RemoteCommandsViewModelDelegate
     var didLogout: (() -> Void)?
     
     var urlString: String {
         return delegate.siteURL?.absoluteString ?? LocalizedString("Not Available", comment: "Error when nightscout service url is not set")
     }
 
-    init(delegate: ServiceStatusViewModelDelegate) {
+    init(delegate: ServiceStatusViewModelDelegate, remoteCommandsViewModelDelegate: RemoteCommandsViewModelDelegate) {
         self.delegate = delegate
+        self.remoteCommandsViewModelDelegate = remoteCommandsViewModelDelegate
         
         delegate.verifyConfiguration { (error) in
             DispatchQueue.main.async {
