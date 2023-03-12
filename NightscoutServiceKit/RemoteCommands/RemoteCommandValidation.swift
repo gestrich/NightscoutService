@@ -6,6 +6,6 @@
 //  Copyright © 2023 LoopKit Authors. All rights reserved.
 //
 
-public protocol RemoteCommandValidation {
+protocol RemoteCommandValidation {
     func validate() throws
 }

@@ -1,16 +1,27 @@
 //
 //  OverrideCancelRemoteNotification.swift
-//  NightscoutServiceKit
+//  NightscoutUploadKit
 //
 //  Created by Bill Gestrich on 2/25/23.
-//  Copyright © 2023 LoopKit Authors. All rights reserved.
+//  Copyright © 2023 Pete Schwamb. All rights reserved.
 //
 
 import Foundation
-import NightscoutUploadKit
 import LoopKit
 
-extension OverrideCancelRemoteNotification {
+public struct OverrideCancelRemoteNotification: RemoteNotification, Codable {
+    
+    public let remoteAddress: String
+    public let expiration: Date?
+    public let sentAt: Date?
+    public let cancelOverride: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case remoteAddress = "remote-address"
+        case expiration = "expiration"
+        case sentAt = "sent-at"
+        case cancelOverride = "cancel-temporary-override"
+    }
     
     func toRemoteCommand(otpManager: OTPManager, commandSource: RemoteCommandSource) -> NightscoutRemoteCommand {
         let expirationValidator = ExpirationValidator(expiration: expiration)
@@ -24,5 +35,9 @@ extension OverrideCancelRemoteNotification {
     func toRemoteAction() -> Action {
         let action = OverrideCancelAction(remoteAddress: remoteAddress)
         return .cancelTemporaryOverride(action)
+    }
+    
+    public static func includedInNotification(_ notification: [String: Any]) -> Bool {
+        return notification["cancel-temporary-override"] != nil
     }
 }

@@ -8,7 +8,6 @@
 
 import Foundation
 import LoopKit
-import NightscoutUploadKit
 
 class RemoteCommandSourceV1: RemoteCommandSource {
     
@@ -35,24 +34,14 @@ class RemoteCommandSourceV1: RemoteCommandSource {
     
     func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand {
         
-        enum NSRemoteCommandSourceV1Error: Error {
+        enum RemoteNotificationError: Error {
             case unhandledNotification
         }
         
-        if BolusRemoteNotification.includedInNotification(notification) {
-            let bolusNotification = try BolusRemoteNotification(dictionary: notification)
-            return bolusNotification.toRemoteCommand(otpManager: otpManager, commandSource: self)
-        } else if CarbRemoteNotification.includedInNotification(notification) {
-            let carbNotification = try CarbRemoteNotification(dictionary: notification)
-            return carbNotification.toRemoteCommand(otpManager: otpManager, commandSource: self)
-        }  else if OverrideRemoteNotification.includedInNotification(notification) {
-            let overrideNotification = try OverrideRemoteNotification(dictionary: notification)
-            return overrideNotification.toRemoteCommand(otpManager: otpManager, commandSource: self)
-        } else if OverrideCancelRemoteNotification.includedInNotification(notification) {
-            let overrideCancelNotification = try OverrideCancelRemoteNotification(dictionary: notification)
-            return overrideCancelNotification.toRemoteCommand(otpManager: otpManager, commandSource: self)
-        } else {
-            throw NSRemoteCommandSourceV1Error.unhandledNotification
+        guard let remoteNotification = try notification.toRemoteNotification() else {
+            throw RemoteNotificationError.unhandledNotification
         }
+        
+        return remoteNotification.toRemoteCommand(otpManager: otpManager, commandSource: self)
     }
 }

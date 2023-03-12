@@ -27,10 +27,7 @@ class NightscoutRemoteCommand: RemoteCommand {
         self.commandSource = commandSource
     }
     
-    
-    //MARK: RemoteCommand
-    
-    public func validate() throws {
+    func validate() throws {
         for validator in validators {
             try validator.validate()
         }

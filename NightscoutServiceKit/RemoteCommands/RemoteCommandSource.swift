@@ -8,6 +8,6 @@
 
 import LoopKit
 
-public protocol RemoteCommandSource {
+protocol RemoteCommandSource {
     func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand
 }
