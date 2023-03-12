@@ -353,6 +353,39 @@ extension NightscoutService: RemoteDataService {
         }
     }
     
+    @available(*, renamed: "uploadRemoteCommandStatus(status:)")
+    public func uploadRemoteCommandStatus(status: String, completion: @escaping (_ error: Error?) -> Void) {
+        
+        guard let uploader = uploader else {
+            completion(NightscoutServiceError.missingCredentials)
+            return
+        }
+        
+        let treatment = NightscoutTreatment(timestamp: Date(), enteredBy: "", notes: status, eventType: .note)
+        
+        uploader.upload([treatment]) { result in
+            switch result {
+            case .success:
+                completion(nil)
+            case .failure(let error):
+                completion(error)
+            }
+        }
+    }
+    
+    public func uploadRemoteCommandStatus(status: String) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            uploadRemoteCommandStatus(status: status) { error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: ())
+            }
+        }
+    }
+    
+    
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
         guard let uploader = uploader else {
             completion(.failure(NightscoutServiceError.missingCredentials))
