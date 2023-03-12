@@ -13,7 +13,7 @@ class NightscoutRemoteCommand: RemoteCommand {
     
     let id: String
     let action: Action
-    private(set) var validators: [RemoteCommandValidation]
+    private let validators: [RemoteCommandValidation]
     private let commandSource: RemoteCommandSource
     
     init(id: String,

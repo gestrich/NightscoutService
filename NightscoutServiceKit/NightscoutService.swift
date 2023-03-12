@@ -339,21 +339,19 @@ extension NightscoutService: RemoteDataService {
     //MARK: Remote Commands
     
     public func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand {
-        let commandSource = try remoteCommandSource(notification: notification)
-        return try await commandSource.commandFromPushNotification(notification)
-    }
-    
-    private func remoteCommandSource(notification: [String: AnyObject]) throws -> RemoteCommandSource {
         
         enum RemoteCommandSourceError: Error {
             case missingCommandSource
         }
         
+        let commandSource: RemoteCommandSource
         if commandSourceV1.supportsPushNotification(notification) {
-            return commandSourceV1
+            commandSource = commandSourceV1
         } else {
             throw RemoteCommandSourceError.missingCommandSource
         }
+        
+        return try await commandSource.commandFromPushNotification(notification)
     }
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
