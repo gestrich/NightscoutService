@@ -14,6 +14,7 @@ import NightscoutKit
 public enum NightscoutServiceError: Error {
     case incompatibleTherapySettings
     case missingCredentials
+    case missingCommandSource
 }
 
 
@@ -59,6 +60,7 @@ public final class NightscoutService: Service {
     }
     
     private let commandSourceV1: RemoteCommandSourceV1
+    private var commandSourceV2: RemoteCommandSourceV2
 
     private let log = OSLog(category: "NightscoutService")
 
@@ -67,6 +69,11 @@ public final class NightscoutService: Service {
         self.lockedObjectIdCache = Locked(ObjectIdCache())
         self.otpManager = OTPManager(secretStore: KeychainManager())
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
+        self.commandSourceV2 = RemoteCommandSourceV2(otpManager: otpManager)
+        self.commandSourceV1.delegate = self
+        Task {
+            await self.commandSourceV2.setDelegate(self)
+        }
     }
 
     public required init?(rawState: RawStateValue) {
@@ -82,6 +89,11 @@ public final class NightscoutService: Service {
         
         self.otpManager = OTPManager(secretStore: KeychainManager())
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
+        self.commandSourceV2 = RemoteCommandSourceV2(otpManager: otpManager)
+        self.commandSourceV1.delegate = self
+        Task {
+            await commandSourceV2.setDelegate(self)
+        }
         
         restoreCredentials()
     }
@@ -335,25 +347,6 @@ extension NightscoutService: RemoteDataService {
         uploader.uploadProfiles(stored.compactMap { $0.profileSet }, completion: completion)
     }
     
-    
-    //MARK: Remote Commands
-    
-    public func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand {
-        
-        enum RemoteCommandSourceError: Error {
-            case missingCommandSource
-        }
-        
-        let commandSource: RemoteCommandSource
-        if commandSourceV1.supportsPushNotification(notification) {
-            commandSource = commandSourceV1
-        } else {
-            throw RemoteCommandSourceError.missingCommandSource
-        }
-        
-        return try await commandSource.commandFromPushNotification(notification)
-    }
-    
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
         guard let uploader = uploader else {
             completion(.failure(NightscoutServiceError.missingCredentials))
@@ -375,17 +368,149 @@ extension NightscoutService: RemoteDataService {
         })
     }
     
-    enum NotificationValidationError: LocalizedError {
-        case missingOTP
+    public func handleRemoteNotification(_ notification: [String: AnyObject]) async throws {
+        let commandSource = try commandSource(notification: notification)
+        await commandSource.handleRemoteNotification(notification)
+    }
+    
+    public func processPendingRemoteCommands() async throws {
+        try await commandSourceV2.processPendingRemoteCommands()
+    }
+    
+    private func commandSource(notification: [String: AnyObject]) throws -> RemoteCommandSource {
         
-        var errorDescription: String? {
-            switch self {
-            case .missingOTP:
-                return "Error: Password is required."
-            }
+        guard let versionString = notification["version"] as? String else {
+            return commandSourceV1 //fallback before versions were introduced
+        }
+        
+        guard let version = Double(versionString) else {
+            throw NightscoutServiceError.missingCommandSource
+        }
+        
+        switch version {
+        case 1.0..<2.0:
+            return commandSourceV1
+        case 2.0..<3.0:
+            return commandSourceV2
+        default:
+            throw NightscoutServiceError.missingCommandSource
         }
     }
 
+}
+
+extension NightscoutService: RemoteCommandSourceV1Delegate {
+    
+    func commandSourceV1(_: RemoteCommandSourceV1, handleAction action: Action) async throws {
+        
+        switch action {
+        case .temporaryScheduleOverride(let overrideCommand):
+            try await self.serviceDelegate?.handleRemoteOverride(
+                name: overrideCommand.name,
+                durationTime: overrideCommand.durationTime,
+                remoteAddress: overrideCommand.remoteAddress
+            )
+        case .cancelTemporaryOverride:
+            try await self.serviceDelegate?.handleRemoteOverrideCancel()
+        case .bolusEntry(let bolusCommand):
+            try await self.serviceDelegate?.handleRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
+        case .carbsEntry(let carbCommand):
+            try await self.serviceDelegate?.handleRemoteCarb(
+                amountInGrams: carbCommand.amountInGrams,
+                absorptionTime: carbCommand.absorptionTime,
+                foodType: carbCommand.foodType,
+                startDate: carbCommand.startDate
+            )
+        case .autobolus(let autobolusCommand):
+            try await self.serviceDelegate?.handleRemoteAutobolus(activate: autobolusCommand.active)
+        case .closedLoop(let closedLoopComand):
+            try await self.serviceDelegate?.handleRemoteClosedLoop(activate: closedLoopComand.active)
+        }
+    }
+    
+    func commandSourceV1(_: RemoteCommandSourceV1, uploadError error: Error, notification: [String: AnyObject]) async throws {
+        
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        var commandDescription = "Loop Remote Action Error"
+        if let remoteNotification = try? notification.toRemoteNotification() {
+            commandDescription = remoteNotification.toRemoteAction().description
+        }
+        
+        let notificationJSON = try JSONSerialization.data(withJSONObject: notification)
+        let notificationJSONString = String(data: notificationJSON, encoding: .utf8) ?? ""
+        
+        let noteBody = """
+        \(error.localizedDescription)
+        \(notificationJSONString)
+        """
+
+        let treatment = NightscoutTreatment(
+            timestamp: Date(),
+            enteredBy: commandDescription,
+            notes: noteBody,
+            eventType: .note
+        )
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            uploader.upload([treatment], completionHandler: { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
+}
+
+extension NightscoutService: RemoteCommandSourceV2Delegate {
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, fetchCommandsWithStartDate startDate: Date) async throws -> [NSRemoteCommandPayload] {
+        
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        return try await uploader.fetchRemoteCommands(earliestDate: startDate)
+    }
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, fetchPendingCommandsWithStartDate startDate: Date) async throws -> [NSRemoteCommandPayload] {
+        
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        return try await uploader.fetchPendingRemoteCommands(earliestDate: startDate)
+    }
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, updateCommand command: NSRemoteCommandPayload, status: NSRemoteCommandStatus) async throws {
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        guard let id = command._id else { throw RemoteCommandPayloadError.missingID }
+        let commandUpdate = NSRemoteCommandPayloadUpdate(status: status)
+        let _ = try await uploader.updateRemoteCommand(commandUpdate: commandUpdate, commandID: id)
+    }
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, handleAction action: Action) async throws {
+        
+        switch action {
+        case .temporaryScheduleOverride(let overrideCommand):
+            try await self.serviceDelegate?.handleRemoteOverride(
+                name: overrideCommand.name,
+                durationTime: overrideCommand.durationTime,
+                remoteAddress: overrideCommand.remoteAddress
+            )
+        case .cancelTemporaryOverride:
+            try await self.serviceDelegate?.handleRemoteOverrideCancel()
+        case .bolusEntry(let bolusCommand):
+            try await self.serviceDelegate?.handleRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
+        case .carbsEntry(let carbCommand):
+            try await self.serviceDelegate?.handleRemoteCarb(
+                amountInGrams: carbCommand.amountInGrams,
+                absorptionTime: carbCommand.absorptionTime,
+                foodType: carbCommand.foodType,
+                startDate: carbCommand.startDate
+            )
+        case .autobolus(let autobolusCommand):
+            try await self.serviceDelegate?.handleRemoteAutobolus(activate: autobolusCommand.active)
+        case .closedLoop(let closedLoopComand):
+            try await self.serviceDelegate?.handleRemoteClosedLoop(activate: closedLoopComand.active)
+        }
+    }
 }
 
 extension KeychainManager {

@@ -9,5 +9,5 @@
 import LoopKit
 
 protocol RemoteCommandSource {
-    func commandFromPushNotification(_ notification: [String: AnyObject]) async throws -> RemoteCommand
+    func handleRemoteNotification(_ notification: [String: AnyObject]) async
 }
