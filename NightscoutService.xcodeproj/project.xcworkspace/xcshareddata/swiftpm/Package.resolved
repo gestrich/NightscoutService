@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "nightscoutkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gestrich/NightscoutKit.git",
+      "state" : {
+        "branch" : "feature/2023-10/bg/remote-commands",
+        "revision" : "4fd1d92ce4abb256378d71d23eafde7082a21dcd"
+      }
+    },
+    {
       "identity" : "onetimepassword",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattrubin/OneTimePassword",
