@@ -30,6 +30,7 @@ public struct BolusRemoteNotification: RemoteNotification, Codable {
         let otpValidator = OTPValidator(sentAt: sentAt, otp: otp, otpManager: otpManager)
         return NightscoutRemoteCommand(id: id,
                                        action: toRemoteAction(),
+                                       status: RemoteCommandStatus(state: .Pending, message: ""),
                                        validators: [expirationValidator, otpValidator],
                                        commandSource: commandSource
         )

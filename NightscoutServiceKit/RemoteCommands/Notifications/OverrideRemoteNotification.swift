@@ -36,12 +36,27 @@ public struct OverrideRemoteNotification: RemoteNotification, Codable {
         let expirationValidator = ExpirationValidator(expiration: expiration)
         return NightscoutRemoteCommand(id: id,
                                        action: toRemoteAction(),
+                                       status: RemoteCommandStatus(state: .Pending, message: ""),
                                        validators: [expirationValidator],
                                        commandSource: commandSource
         )
     }
     
     func toRemoteAction() -> Action {
+        
+        //TODO: Remove this hack in V1 which supports updating a few
+        //settings via hacked remote overrides
+        if let setting = SULoopBoolSetting(remoteKey: name) {
+            if setting.settingKey == "autoBolusEnabled" {
+                return .autobolus(AutobolusAction(active: setting.settingValue))
+            } else if setting.settingKey == "dosingEnabled" {
+                return .closedLoop(ClosedLoopAction(active: setting.settingValue))
+            } else {
+                assertionFailure("Unrecognized settings key \(setting.settingKey)")
+            }
+        }
+        
+        
         let action = OverrideAction(name: name, durationTime: durationTime(), remoteAddress: remoteAddress)
         return .temporaryScheduleOverride(action)
     }

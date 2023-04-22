@@ -14,7 +14,7 @@ public struct OverrideCancelRemoteNotification: RemoteNotification, Codable {
     public let remoteAddress: String
     public let expiration: Date?
     public let sentAt: Date?
-    public let cancelOverride: Bool
+    public let cancelOverride: String
 
     enum CodingKeys: String, CodingKey {
         case remoteAddress = "remote-address"
@@ -27,6 +27,7 @@ public struct OverrideCancelRemoteNotification: RemoteNotification, Codable {
         let expirationValidator = ExpirationValidator(expiration: expiration)
         return NightscoutRemoteCommand(id: id,
                                        action: toRemoteAction(),
+                                       status: RemoteCommandStatus(state: .Pending, message: ""),
                                        validators: [expirationValidator],
                                        commandSource: commandSource
         )

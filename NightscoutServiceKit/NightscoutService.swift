@@ -59,6 +59,12 @@ public final class NightscoutService: Service {
     }
     
     private let commandSourceV1: RemoteCommandSourceV1
+    private var commandSourceV2: RemoteCommandSourceV2? {
+        get {
+            guard let uploader = uploader else { return nil }
+            return RemoteCommandSourceV2(otpManager: otpManager, nightscoutClient: uploader)
+        }
+    }
 
     private let log = OSLog(category: "NightscoutService")
 
@@ -345,7 +351,9 @@ extension NightscoutService: RemoteDataService {
         }
         
         let commandSource: RemoteCommandSource
-        if commandSourceV1.supportsPushNotification(notification) {
+        if let commandSourceV2 = commandSourceV2, commandSourceV2.supportsPushNotification(notification) {
+            commandSource = commandSourceV2
+        } else if commandSourceV1.supportsPushNotification(notification) {
             commandSource = commandSourceV1
         } else {
             throw RemoteCommandSourceError.missingCommandSource
@@ -353,6 +361,34 @@ extension NightscoutService: RemoteDataService {
         
         return try await commandSource.commandFromPushNotification(notification)
     }
+    
+    public func fetchRemoteCommands() async throws -> [RemoteCommand] {
+        var result = [RemoteCommand]()
+        for source in commandSources() {
+            result += try await source.fetchRemoteCommands()
+        }
+        return result
+    }
+    
+    public func fetchPendingRemoteCommands() async throws -> [RemoteCommand] {
+        var result = [RemoteCommand]()
+        for source in commandSources() {
+            result += try await source.fetchPendingRemoteCommands()
+        }
+        return result
+    }
+    
+    private func commandSources() -> [RemoteCommandSource] {
+        var result = [RemoteCommandSource]()
+        result.append(commandSourceV1)
+        if let commandSourceV2 {
+            result.append(commandSourceV2)
+        }
+        return result
+    }
+    
+    
+    //MARK: Therapy Settings
     
     public func fetchStoredTherapySettings(completion: @escaping (Result<(TherapySettings,Date), Error>) -> Void) {
         guard let uploader = uploader else {
@@ -373,17 +409,6 @@ extension NightscoutService: RemoteDataService {
                 completion(.failure(error))
             }
         })
-    }
-    
-    enum NotificationValidationError: LocalizedError {
-        case missingOTP
-        
-        var errorDescription: String? {
-            switch self {
-            case .missingOTP:
-                return "Error: Password is required."
-            }
-        }
     }
 
 }
