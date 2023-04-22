@@ -62,6 +62,7 @@ public final class NightscoutService: Service {
     }
     
     private let commandSourceV1: RemoteCommandSourceV1
+    private var commandSourceV2: RemoteCommandSourceV2
 
     private let log = OSLog(category: "NightscoutService")
 
@@ -70,7 +71,11 @@ public final class NightscoutService: Service {
         self.lockedObjectIdCache = Locked(ObjectIdCache())
         self.otpManager = OTPManager(secretStore: KeychainManager())
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
+        self.commandSourceV2 = RemoteCommandSourceV2(otpManager: otpManager)
         self.commandSourceV1.delegate = self
+        Task {
+            await self.commandSourceV2.setDelegate(self)
+        }
     }
 
     public required init?(rawState: RawStateValue) {
@@ -86,7 +91,11 @@ public final class NightscoutService: Service {
         
         self.otpManager = OTPManager(secretStore: KeychainManager())
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
+        self.commandSourceV2 = RemoteCommandSourceV2(otpManager: otpManager)
         self.commandSourceV1.delegate = self
+        Task {
+            await commandSourceV2.setDelegate(self)
+        }
         
         restoreCredentials()
     }
@@ -403,8 +412,28 @@ extension NightscoutService: RemoteDataService {
         await commandSource.remoteNotificationWasReceived(notification)
     }
     
+    public func loopDidComplete() async throws {
+        try await commandSourceV2.loopDidComplete()
+    }
+    
     private func commandSource(notification: [String: AnyObject]) throws -> RemoteCommandSource {
-        return commandSourceV1
+        
+        guard let versionString = notification["version"] as? String else {
+            return commandSourceV1 //fallback before versions were introduced
+        }
+        
+        guard let version = Double(versionString) else {
+            throw NightscoutServiceError.missingCommandSource
+        }
+        
+        switch version {
+        case 1.0..<2.0:
+            return commandSourceV1
+        case 2.0..<3.0:
+            return commandSourceV2
+        default:
+            throw NightscoutServiceError.missingCommandSource
+        }
     }
 
 }
@@ -431,6 +460,10 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                 foodType: carbCommand.foodType,
                 startDate: carbCommand.startDate
             )
+        case .autobolus(let autobolusCommand):
+            try await self.serviceDelegate?.updateRemoteAutobolus(activate: autobolusCommand.active)
+        case .closedLoop(let closedLoopComand):
+            try await self.serviceDelegate?.updateRemoteClosedLoop(activate: closedLoopComand.active)
         }
     }
     
@@ -466,6 +499,55 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
                     continuation.resume(throwing: error)
                 }
             })
+        }
+    }
+}
+
+extension NightscoutService: RemoteCommandSourceV2Delegate {
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, fetchCommandsWithStartDate startDate: Date) async throws -> [NSRemoteCommandPayload] {
+        
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        return try await uploader.fetchRemoteCommands(earliestDate: startDate)
+    }
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, fetchPendingCommandsWithStartDate startDate: Date) async throws -> [NSRemoteCommandPayload] {
+        
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        return try await uploader.fetchPendingRemoteCommands(earliestDate: startDate)
+    }
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, updateCommand command: NSRemoteCommandPayload, status: NSRemoteCommandStatus) async throws {
+        guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
+        guard let id = command._id else { throw RemoteCommandPayloadError.missingID }
+        let commandUpdate = NSRemoteCommandPayloadUpdate(status: status)
+        let _ = try await uploader.updateRemoteCommand(commandUpdate: commandUpdate, commandID: id)
+    }
+    
+    func commandSourceV2(_: RemoteCommandSourceV2, handleAction action: Action) async throws {
+        
+        switch action {
+        case .temporaryScheduleOverride(let overrideCommand):
+            try await self.serviceDelegate?.enactRemoteOverride(
+                name: overrideCommand.name,
+                durationTime: overrideCommand.durationTime,
+                remoteAddress: overrideCommand.remoteAddress
+            )
+        case .cancelTemporaryOverride:
+            try await self.serviceDelegate?.cancelRemoteOverride()
+        case .bolusEntry(let bolusCommand):
+            try await self.serviceDelegate?.deliverRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
+        case .carbsEntry(let carbCommand):
+            try await self.serviceDelegate?.deliverRemoteCarbs(
+                amountInGrams: carbCommand.amountInGrams,
+                absorptionTime: carbCommand.absorptionTime,
+                foodType: carbCommand.foodType,
+                startDate: carbCommand.startDate
+            )
+        case .autobolus(let autobolusCommand):
+            try await self.serviceDelegate?.updateRemoteAutobolus(activate: autobolusCommand.active)
+        case .closedLoop(let closedLoopComand):
+            try await self.serviceDelegate?.updateRemoteClosedLoop(activate: closedLoopComand.active)
         }
     }
 }

@@ -35,6 +35,19 @@ public struct OverrideRemoteNotification: RemoteNotification, Codable {
     }
     
     func toRemoteAction() -> Action {
+        
+        //TODO: Remove this hack in V1 which supports updating a few
+        //settings via hacked remote overrides
+        if let setting = SULoopBoolSetting(remoteKey: name) {
+            if setting.settingKey == "autoBolusEnabled" {
+                return .autobolus(AutobolusAction(active: setting.settingValue))
+            } else if setting.settingKey == "dosingEnabled" {
+                return .closedLoop(ClosedLoopAction(active: setting.settingValue))
+            } else {
+                assertionFailure("Unrecognized settings key \(setting.settingKey)")
+            }
+        }
+        
         let action = OverrideAction(name: name, durationTime: durationTime(), remoteAddress: remoteAddress)
         return .temporaryScheduleOverride(action)
     }
