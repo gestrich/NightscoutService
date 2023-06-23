@@ -22,7 +22,7 @@ class RemoteCommandSourceV1: RemoteCommandSource {
     
     //MARK: RemoteCommandSource
     
-    func handleRemoteNotification(_ notification: [String: AnyObject]) async {
+    func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async {
         do {
             guard let delegate = delegate else {return}
             let remoteNotification = try notification.toRemoteNotification()

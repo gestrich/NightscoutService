@@ -28,7 +28,7 @@ actor RemoteCommandSourceV2: RemoteCommandSource {
     
     //MARK: RemoteCommandSource
     
-    func handleRemoteNotification(_ notification: [String: AnyObject]) async {
+    func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async {
         
         do {
             let command = try await fetchCommandFromPushNotification(notification)
