@@ -39,7 +39,7 @@ actor RemoteCommandSourceV2: RemoteCommandSource {
         }
     }
     
-    func processPendingRemoteCommands() async throws {
+    func loopDidComplete() async throws {
         
         //TODO: What if NS instance does not support V2 Commands?
         //We proably need to periodically fetch the NS Remote API version

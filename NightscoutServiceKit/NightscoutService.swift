@@ -373,8 +373,8 @@ extension NightscoutService: RemoteDataService {
         await commandSource.remoteNotificationWasReceived(notification)
     }
     
-    public func processPendingRemoteCommands() async throws {
-        try await commandSourceV2.processPendingRemoteCommands()
+    public func loopDidComplete() async throws {
+        try await commandSourceV2.loopDidComplete()
     }
     
     private func commandSource(notification: [String: AnyObject]) throws -> RemoteCommandSource {
