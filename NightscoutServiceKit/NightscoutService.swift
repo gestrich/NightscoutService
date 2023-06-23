@@ -405,26 +405,26 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
         
         switch action {
         case .temporaryScheduleOverride(let overrideCommand):
-            try await self.serviceDelegate?.handleRemoteOverride(
+            try await self.serviceDelegate?.updateRemoteOverride(
                 name: overrideCommand.name,
                 durationTime: overrideCommand.durationTime,
                 remoteAddress: overrideCommand.remoteAddress
             )
         case .cancelTemporaryOverride:
-            try await self.serviceDelegate?.handleRemoteOverrideCancel()
+            try await self.serviceDelegate?.cancelRemoteOverride()
         case .bolusEntry(let bolusCommand):
-            try await self.serviceDelegate?.handleRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
+            try await self.serviceDelegate?.deliverRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
         case .carbsEntry(let carbCommand):
-            try await self.serviceDelegate?.handleRemoteCarb(
+            try await self.serviceDelegate?.deliverRemoteCarbs(
                 amountInGrams: carbCommand.amountInGrams,
                 absorptionTime: carbCommand.absorptionTime,
                 foodType: carbCommand.foodType,
                 startDate: carbCommand.startDate
             )
         case .autobolus(let autobolusCommand):
-            try await self.serviceDelegate?.handleRemoteAutobolus(activate: autobolusCommand.active)
+            try await self.serviceDelegate?.updateRemoteAutobolus(activate: autobolusCommand.active)
         case .closedLoop(let closedLoopComand):
-            try await self.serviceDelegate?.handleRemoteClosedLoop(activate: closedLoopComand.active)
+            try await self.serviceDelegate?.updateRemoteClosedLoop(activate: closedLoopComand.active)
         }
     }
     
@@ -489,26 +489,26 @@ extension NightscoutService: RemoteCommandSourceV2Delegate {
         
         switch action {
         case .temporaryScheduleOverride(let overrideCommand):
-            try await self.serviceDelegate?.handleRemoteOverride(
+            try await self.serviceDelegate?.updateRemoteOverride(
                 name: overrideCommand.name,
                 durationTime: overrideCommand.durationTime,
                 remoteAddress: overrideCommand.remoteAddress
             )
         case .cancelTemporaryOverride:
-            try await self.serviceDelegate?.handleRemoteOverrideCancel()
+            try await self.serviceDelegate?.cancelRemoteOverride()
         case .bolusEntry(let bolusCommand):
-            try await self.serviceDelegate?.handleRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
+            try await self.serviceDelegate?.deliverRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
         case .carbsEntry(let carbCommand):
-            try await self.serviceDelegate?.handleRemoteCarb(
+            try await self.serviceDelegate?.deliverRemoteCarbs(
                 amountInGrams: carbCommand.amountInGrams,
                 absorptionTime: carbCommand.absorptionTime,
                 foodType: carbCommand.foodType,
                 startDate: carbCommand.startDate
             )
         case .autobolus(let autobolusCommand):
-            try await self.serviceDelegate?.handleRemoteAutobolus(activate: autobolusCommand.active)
+            try await self.serviceDelegate?.updateRemoteAutobolus(activate: autobolusCommand.active)
         case .closedLoop(let closedLoopComand):
-            try await self.serviceDelegate?.handleRemoteClosedLoop(activate: closedLoopComand.active)
+            try await self.serviceDelegate?.updateRemoteClosedLoop(activate: closedLoopComand.active)
         }
     }
 }
