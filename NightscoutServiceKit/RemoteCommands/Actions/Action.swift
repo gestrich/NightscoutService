@@ -13,8 +13,6 @@ public enum Action: Codable {
     case cancelTemporaryOverride(OverrideCancelAction)
     case bolusEntry(BolusAction)
     case carbsEntry(CarbAction)
-    case closedLoop(ClosedLoopAction)
-    case autobolus(AutobolusAction)
     
     public var description: String {
         return "\(actionName) \(actionParameterDescription)"
@@ -30,10 +28,6 @@ public enum Action: Codable {
             return LocalizedString("Cancel Override", comment: "The remote action name for Cancel Override")
         case .temporaryScheduleOverride:
             return LocalizedString("Override", comment: "The remote action name for Override")
-        case .closedLoop:
-            return LocalizedString("Closed Loop Update", comment: "The remote action name for activating/deactivating closed loop")
-        case .autobolus:
-            return LocalizedString("Autobolus Update", comment: "The remote action name for activating/deactivating autobolus")
         }
     }
     
@@ -49,19 +43,7 @@ public enum Action: Codable {
             return ""
         case .temporaryScheduleOverride(let overrideAction):
             return overrideAction.name
-        case .autobolus(let autobolusAction):
-            return autobolusAction.active ? remoteCommandActiveStateName : remoteCommandInactiveStateName
-        case .closedLoop(let closedLoopAction):
-            return closedLoopAction.active ? remoteCommandActiveStateName : remoteCommandInactiveStateName
         }
-    }
-    
-    private var remoteCommandActiveStateName: String {
-        return LocalizedString("Active", comment: "Remote command status when is Active")
-    }
-    
-    private var remoteCommandInactiveStateName: String {
-        return LocalizedString("Inactive", comment: "Remote command status when is Inactive")
     }
     
     var carbGramAbbreviation: String {
