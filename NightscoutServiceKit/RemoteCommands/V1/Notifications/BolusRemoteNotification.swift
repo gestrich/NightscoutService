@@ -15,7 +15,7 @@ public struct BolusRemoteNotification: RemoteNotification, Codable {
     public let remoteAddress: String
     public let expiration: Date?
     public let sentAt: Date?
-    public let otp: String
+    public let otp: String?
     public let enteredBy: String?
     
     enum CodingKeys: String, CodingKey {
