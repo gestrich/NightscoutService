@@ -376,7 +376,7 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
         
         switch action {
         case .temporaryScheduleOverride(let overrideCommand):
-            try await self.serviceDelegate?.updateRemoteOverride(
+            try await self.serviceDelegate?.enactRemoteOverride(
                 name: overrideCommand.name,
                 durationTime: overrideCommand.durationTime,
                 remoteAddress: overrideCommand.remoteAddress
