@@ -55,4 +55,42 @@ public struct CarbRemoteNotification: RemoteNotification, Codable {
     public static func includedInNotification(_ notification: [String: Any]) -> Bool {
         return notification["carbs-entry"] != nil
     }
+    
+    /*
+     Nightscout requires unique start Dates for each record.
+     This randomizes the seconds/milliseconds to help avoid
+     entry collisions which can occur with carb entries
+     since the user can select a time from the Nightscout Careportal.
+     https://github.com/LoopKit/LoopCaregiver/issues/33
+     */
+
+    func adjustedCarbEntryWithRandomSecondsComponent() -> CarbRemoteNotification {
+        let adjustedStartDate = startDate?.dateUsingCurrentSeconds()
+        let result = CarbRemoteNotification(
+            amount: amount,
+            absorptionInHours: absorptionInHours,
+            foodType: foodType,
+            startDate: adjustedStartDate,
+            remoteAddress: remoteAddress,
+            expiration: expiration,
+            sentAt: sentAt,
+            otp: otp,
+            enteredBy: enteredBy
+        )
+        return result
+    }
+}
+
+extension Date {
+    func dateUsingCurrentSeconds() -> Date {
+        let calendar = Calendar.current
+
+         var components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self)
+         let now = Date()
+         let nowSeconds = calendar.component(.second, from: now)
+         let nowMillisecond = calendar.component(.nanosecond, from: now) / 1_000_000
+         components.second = nowSeconds
+         components.nanosecond = nowMillisecond * 1_000_000
+         return calendar.date(from: components) ?? self
+    }
 }

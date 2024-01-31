@@ -68,7 +68,8 @@ extension Dictionary<String, AnyObject> {
         if BolusRemoteNotification.includedInNotification(self) {
             return try BolusRemoteNotification(dictionary: self)
         } else if CarbRemoteNotification.includedInNotification(self) {
-            return try CarbRemoteNotification(dictionary: self)
+            let carbRemoteNotification = try CarbRemoteNotification(dictionary: self)
+            return carbRemoteNotification.adjustedCarbEntryWithRandomSecondsComponent()
         }  else if OverrideRemoteNotification.includedInNotification(self) {
             return try OverrideRemoteNotification(dictionary: self)
         } else if OverrideCancelRemoteNotification.includedInNotification(self) {
