@@ -64,11 +64,13 @@ public final class NightscoutService: Service {
     private let commandSourceV1: RemoteCommandSourceV1
 
     private let log = OSLog(category: "NightscoutService")
+    
+    private let notificationExpirationInMinutes = 15.0
 
     public init() {
         self.isOnboarded = false
         self.lockedObjectIdCache = Locked(ObjectIdCache())
-        self.otpManager = OTPManager(secretStore: KeychainManager())
+        self.otpManager = OTPManager(secretStore: KeychainManager(), maxMinutesValid: notificationExpirationInMinutes)
         self.commandSourceV1 = RemoteCommandSourceV1(otpManager: otpManager)
         self.commandSourceV1.delegate = self
     }
@@ -236,14 +238,37 @@ extension NightscoutService: RemoteDataService {
     }
 
     public var doseDataLimit: Int? { return 1000 }
-
+    
     public func uploadDoseData(created: [DoseEntry], deleted: [DoseEntry], completion: @escaping (_ result: Result<Bool, Error>) -> Void) {
+        Task {
+            let notificationHistory = await notificationHistory()
+            uploadDoseData(created: created, deleted: deleted, notificationHistory: notificationHistory, completion: completion)
+            
+            // Upload pending stored notifications
+            await uploadPendingNotifications()
+        }
+    }
+    
+    func uploadPendingNotifications() async {
+        await commandSourceV1.uploadPendingNotifications()
+    }
+
+    public func uploadDoseData(created: [DoseEntry], deleted: [DoseEntry], notificationHistory: [StoredRemoteNotification], completion: @escaping (_ result: Result<Bool, Error>) -> Void) {
         guard hasConfiguration, let uploader = uploader else {
             completion(.success(true))
             return
         }
-
-        uploader.createDoses(created, usingObjectIdCache: self.objectIdCache) { (result) in
+        
+        let deviceName = UIDevice.current.name
+        let sourceMessage: (DoseEntry) -> String = { (dose) -> String in
+            if notificationHistory.contains(where: { $0.containsDose(dose) }) {
+                return "Loop (via remote command)"
+            } else {
+                return "loop://\(deviceName)"
+            }
+        }
+        
+        uploader.createDoses(created, sourceMessage: sourceMessage, usingObjectIdCache: objectIdCache) { (result) in
             switch (result) {
             case .failure(let error):
                 completion(.failure(error))
@@ -256,7 +281,7 @@ extension NightscoutService: RemoteDataService {
                     }
                 }
                 self.stateDelegate?.pluginDidUpdateState(self)
-
+                
                 uploader.deleteDoses(deleted.filter { !$0.isMutable }, usingObjectIdCache: self.objectIdCache) { result in
                     switch result {
                     case .failure(let error):
@@ -399,8 +424,32 @@ extension NightscoutService: RemoteDataService {
 
     
     public func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async throws {
+        guard let serviceDelegate else {
+            return
+        }
+
+        // Set the expiration to longer duration. Ideally this would be done in Nightscout instead.
+        var notification = notification
+        let dateFormatter = DateFormatter.iso8601DateDecoder
+        if let sentDateString = notification["sent-at"] as? String, let sentDate = dateFormatter.date(from: sentDateString) {
+            let expirationDate = sentDate.addingTimeInterval(60 * notificationExpirationInMinutes)
+            notification["expiration"] = dateFormatter.string(from: expirationDate) as AnyObject
+        }
+        
         let commandSource = try commandSource(notification: notification)
-        await commandSource.remoteNotificationWasReceived(notification)
+        await commandSource.remoteNotificationWasReceived(notification, serviceDelegate: serviceDelegate)
+    }
+    
+    public func notificationHistory() async -> [StoredRemoteNotification] {
+        return await commandSourceV1.notificationHistory()
+    }
+    
+    public func notificationPublisher() async -> AsyncStream<[StoredRemoteNotification]> {
+        return await commandSourceV1.notificationPublisher()
+    }
+    
+    public func deleteNotificationHistory() {
+        commandSourceV1.deleteNotificationHistory()
     }
     
     private func commandSource(notification: [String: AnyObject]) throws -> RemoteCommandSource {
@@ -410,31 +459,7 @@ extension NightscoutService: RemoteDataService {
 }
 
 extension NightscoutService: RemoteCommandSourceV1Delegate {
-    
-    func commandSourceV1(_: RemoteCommandSourceV1, handleAction action: Action) async throws {
-        
-        switch action {
-        case .temporaryScheduleOverride(let overrideCommand):
-            try await self.serviceDelegate?.enactRemoteOverride(
-                name: overrideCommand.name,
-                durationTime: overrideCommand.durationTime,
-                remoteAddress: overrideCommand.remoteAddress
-            )
-        case .cancelTemporaryOverride:
-            try await self.serviceDelegate?.cancelRemoteOverride()
-        case .bolusEntry(let bolusCommand):
-            try await self.serviceDelegate?.deliverRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
-        case .carbsEntry(let carbCommand):
-            try await self.serviceDelegate?.deliverRemoteCarbs(
-                amountInGrams: carbCommand.amountInGrams,
-                absorptionTime: carbCommand.absorptionTime,
-                foodType: carbCommand.foodType,
-                startDate: carbCommand.startDate
-            )
-        }
-    }
-    
-    func commandSourceV1(_: RemoteCommandSourceV1, uploadError error: Error, notification: [String: AnyObject]) async throws {
+    func commandSourceV1(_: RemoteCommandSourceV1, uploadError errorMessage: String, receivedDate: Date, notification: [String: AnyObject]) async throws {
         
         guard let uploader = self.uploader else {throw NightscoutServiceError.missingCredentials}
         var commandDescription = "Loop Remote Action Error"
@@ -446,12 +471,12 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
         let notificationJSONString = String(data: notificationJSON, encoding: .utf8) ?? ""
         
         let noteBody = """
-        \(error.localizedDescription)
+        \(errorMessage)
         \(notificationJSONString)
         """
 
         let treatment = NightscoutTreatment(
-            timestamp: Date(),
+            timestamp: receivedDate,
             enteredBy: commandDescription,
             notes: noteBody,
             eventType: .note

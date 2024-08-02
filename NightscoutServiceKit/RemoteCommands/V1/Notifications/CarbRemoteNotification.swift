@@ -17,7 +17,7 @@ public struct CarbRemoteNotification: RemoteNotification, Codable {
     public let startDate: Date?
     public let remoteAddress: String
     public let expiration: Date?
-    public let sentAt: Date?
+    public let sentAt: Date
     public let otp: String?
     public let enteredBy: String?
 
@@ -41,7 +41,7 @@ public struct CarbRemoteNotification: RemoteNotification, Codable {
     }
     
     func toRemoteAction() -> Action {
-        let action = CarbAction(amountInGrams: amount, absorptionTime: absorptionTime(), foodType: foodType, startDate: startDate)
+        let action = CarbAction(amountInGrams: amount, absorptionTime: absorptionTime(), foodType: foodType, startDate: startDate, userCreatedDate: sentAt)
         return .carbsEntry(action)
     }
     

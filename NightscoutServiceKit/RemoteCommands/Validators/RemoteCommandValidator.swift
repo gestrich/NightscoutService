@@ -29,7 +29,7 @@ struct RemoteCommandValidator {
         }
         
         if nowDateSource() > expirationDate {
-            throw NotificationValidationError.expiredNotification
+            throw NotificationValidationError.expiredNotification(sentDate: remoteNotification.sentAt, receivedDate: nowDateSource())
         }
     }
     
@@ -44,14 +44,19 @@ struct RemoteCommandValidator {
     
     enum NotificationValidationError: LocalizedError {
         case missingOTP
-        case expiredNotification
+        case expiredNotification(sentDate: Date, receivedDate: Date)
         
         var errorDescription: String? {
             switch  self {
             case .missingOTP:
                 return LocalizedString("Missing OTP", comment: "Remote command error description: Missing OTP.")
-            case .expiredNotification:
-                return LocalizedString("Expired", comment: "Remote command error description: expired.")
+            case .expiredNotification(let sentDate, let receivedDate):
+                let errorMessage = String(
+                    format: "Remote Command expired. It was sent at %@ and received by Loop at %@.",
+                    sentDate.formatted(date: .omitted, time: .shortened),
+                    receivedDate.formatted(date: .omitted, time: .shortened)
+                )
+                return LocalizedString(errorMessage, comment: "Remote command error description: expired.")
             }
         }
     }

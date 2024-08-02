@@ -26,35 +26,45 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 150, height: 150)
             
-
-            VStack(spacing: 0) {
-                HStack {
-                    Text("URL")
-                    Spacer()
-                    Text(viewModel.urlString)
-                }
-                .padding()
-                Divider()
-                HStack {
-                    Text("Status")
-                    Spacer()
-                    Text(String(describing: viewModel.status))
-                }
-                .padding()
-                Divider()
-                NavigationLink(destination: OTPSelectionView(otpViewModel: otpViewModel), tag: "otp-view", selection: $selectedItem) {
+            List {
+                Section() {
                     HStack {
-                        Text("One-Time Password")
+                        Text("URL")
                         Spacer()
-                        Text(otpViewModel.otpCode)
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
+                        Text(viewModel.urlString)
                     }
-                }.foregroundColor(Color.primary)
-                .padding()
+                    HStack {
+                        Text("Status")
+                        Spacer()
+                        Text(String(describing: viewModel.status))
+                    }
+                    NavigationLink(destination: OTPSelectionView(otpViewModel: otpViewModel), tag: "otp-view", selection: $selectedItem) {
+                        HStack {
+                            Text("One-Time Password")
+                            Spacer()
+                            Text(otpViewModel.otpCode)
+                        }
+                    }
+                }
+                Section("Remote Commands") {
+                    ForEach(viewModel.remoteCommands, id: \.id){ command in
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(command.actionName)
+                                Spacer()
+                                Text(command.createdDateDescription)
+                            }
+                            Text(command.details)
+                            Text(command.statusMessage)
+                                .foregroundStyle(command.isError ? .red : .primary)
+                            
+                        }
+                    }
+                    Button("Remove History") {
+                        viewModel.deleteNotificationHistory()
+                    }
+                }
             }
-            .background(Color(UIColor.secondarySystemBackground))
-            .cornerRadius(10)
             
             Button(action: {
                 viewModel.didLogout?()
@@ -62,7 +72,6 @@ struct ServiceStatusView: View, HorizontalSizeClassOverride {
                 Text("Logout").padding(.top, 20)
             }
         }
-        .padding([.leading, .trailing])
         .navigationBarTitle("")
         .navigationBarItems(trailing: dismissButton)
     }

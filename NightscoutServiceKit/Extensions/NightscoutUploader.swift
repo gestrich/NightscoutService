@@ -116,15 +116,13 @@ extension NightscoutClient {
 }
 
 extension NightscoutClient {
-
-    func createDoses(_ data: [DoseEntry], usingObjectIdCache objectIdCache: ObjectIdCache, completion: @escaping (Result<[String], Error>) -> Void) {
-        guard !data.isEmpty else {
-            completion(.success([]))
-            return
-        }
-
-        let source = "loop://\(UIDevice.current.name)"
-        
+    
+    func createDoses(
+        _ data: [DoseEntry],
+        sourceMessage: (DoseEntry) -> String,
+        usingObjectIdCache objectIdCache: ObjectIdCache,
+        completion: @escaping (Result<[String], Error>) -> Void
+    ) {
         let treatments = data.compactMap { (dose) -> NightscoutTreatment? in
             var objectId: String? = nil
             
@@ -132,9 +130,13 @@ extension NightscoutClient {
                 objectId = objectIdCache.findObjectIdBySyncIdentifier(syncIdentifier)
             }
             
-            return dose.treatment(enteredBy: source, withObjectId: objectId)
+            return dose.treatment(enteredBy: sourceMessage(dose), withObjectId: objectId)
         }
         
+        guard !treatments.isEmpty else {
+            completion(.success([]))
+            return
+        }
         
         self.upload(treatments) { (result) in
             switch result {

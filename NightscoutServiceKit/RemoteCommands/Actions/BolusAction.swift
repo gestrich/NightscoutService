@@ -11,8 +11,10 @@ import Foundation
 public struct BolusAction: Codable {
     
     public let amountInUnits: Double
+    public let userCreatedDate: Date
     
-    public init(amountInUnits: Double) {
+    public init(amountInUnits: Double, userCreatedDate: Date) {
         self.amountInUnits = amountInUnits
+        self.userCreatedDate = userCreatedDate
     }
 }

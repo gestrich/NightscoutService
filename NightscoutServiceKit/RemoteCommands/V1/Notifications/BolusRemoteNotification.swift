@@ -14,7 +14,7 @@ public struct BolusRemoteNotification: RemoteNotification, Codable {
     public let amount: Double
     public let remoteAddress: String
     public let expiration: Date?
-    public let sentAt: Date?
+    public let sentAt: Date
     public let otp: String?
     public let enteredBy: String?
     
@@ -28,7 +28,11 @@ public struct BolusRemoteNotification: RemoteNotification, Codable {
     }
     
     func toRemoteAction() -> Action {
-        return .bolusEntry(BolusAction(amountInUnits: amount))
+        return .bolusEntry(toBolusAction())
+    }
+    
+    func toBolusAction() -> BolusAction {
+        return BolusAction(amountInUnits: amount, userCreatedDate: sentAt)
     }
     
     func otpValidationRequired() -> Bool {

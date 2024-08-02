@@ -9,5 +9,6 @@
 import LoopKit
 
 protocol RemoteCommandSource {
-    func remoteNotificationWasReceived(_ notification: [String: AnyObject]) async
+    func remoteNotificationWasReceived(_ notification: [String: AnyObject], serviceDelegate: ServiceDelegate) async
+    func notificationHistory() async -> [StoredRemoteNotification]
 }
