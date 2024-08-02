@@ -23,11 +23,7 @@ struct RemoteCommandValidator {
     }
     
     private func validateExpirationDate(remoteNotification: RemoteNotification) throws {
-        
-        guard let expirationDate = remoteNotification.expiration else {
-            return //Skip validation if no date included
-        }
-        
+        let expirationDate = remoteNotification.sentAt.addingTimeInterval(.minutes(15))
         if nowDateSource() > expirationDate {
             throw NotificationValidationError.expiredNotification
         }

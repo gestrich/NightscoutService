@@ -13,7 +13,7 @@ protocol RemoteNotification: Codable {
     
     var id: String {get}
     var expiration: Date? {get}
-    var sentAt: Date? {get}
+    var sentAt: Date {get}
     var otp: String? {get}
     var remoteAddress: String {get}
     var enteredBy: String? {get}
@@ -27,12 +27,8 @@ protocol RemoteNotification: Codable {
 extension RemoteNotification {
     
     var id: String {
-        //There is no unique identifier so we use the sent date when available
-        if let sentAt = sentAt {
-            return "\(sentAt.timeIntervalSince1970)"
-        } else {
-            return UUID().uuidString
-        }
+        //There is no unique identifier so we use the sent date
+        return "\(sentAt.timeIntervalSince1970)"
     }
     
     init(dictionary: [String: Any]) throws {
