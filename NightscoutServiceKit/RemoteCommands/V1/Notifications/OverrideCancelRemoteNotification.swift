@@ -13,7 +13,7 @@ public struct OverrideCancelRemoteNotification: RemoteNotification, Codable {
     
     public let remoteAddress: String
     public let expiration: Date?
-    public let sentAt: Date?
+    public let sentAt: Date
     public let cancelOverride: String
     public let enteredBy: String?
     public let otp: String?

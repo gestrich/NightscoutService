@@ -15,7 +15,7 @@ public struct OverrideRemoteNotification: RemoteNotification, Codable {
     public let durationInMinutes: Double?
     public let remoteAddress: String
     public let expiration: Date?
-    public let sentAt: Date?
+    public let sentAt: Date
     public let enteredBy: String?
     public let otp: String?
     

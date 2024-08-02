@@ -14,11 +14,13 @@ public struct CarbAction: Codable{
     public let absorptionTime: TimeInterval?
     public let foodType: String?
     public let startDate: Date?
+    public let userCreatedDate: Date
     
-    public init(amountInGrams: Double, absorptionTime: TimeInterval? = nil, foodType: String? = nil, startDate: Date? = nil) {
+    public init(amountInGrams: Double, absorptionTime: TimeInterval? = nil, foodType: String? = nil, startDate: Date? = nil, userCreatedDate: Date) {
         self.amountInGrams = amountInGrams
         self.absorptionTime = absorptionTime
         self.foodType = foodType
         self.startDate = startDate
+        self.userCreatedDate = userCreatedDate
     }
 }

@@ -423,13 +423,17 @@ extension NightscoutService: RemoteCommandSourceV1Delegate {
         case .cancelTemporaryOverride:
             try await self.serviceDelegate?.cancelRemoteOverride()
         case .bolusEntry(let bolusCommand):
-            try await self.serviceDelegate?.deliverRemoteBolus(amountInUnits: bolusCommand.amountInUnits)
+            try await self.serviceDelegate?.deliverRemoteBolus(
+                amountInUnits: bolusCommand.amountInUnits,
+                userCreatedDate: bolusCommand.userCreatedDate
+            )
         case .carbsEntry(let carbCommand):
             try await self.serviceDelegate?.deliverRemoteCarbs(
                 amountInGrams: carbCommand.amountInGrams,
                 absorptionTime: carbCommand.absorptionTime,
                 foodType: carbCommand.foodType,
-                startDate: carbCommand.startDate
+                startDate: carbCommand.startDate,
+                userCreatedDate: carbCommand.userCreatedDate
             )
         }
     }
